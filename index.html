@@ -1,0 +1,2746 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>SignalPool — графики, прогноз и чат трейдеров</title>
+<meta name="description" content="SignalPool — графики криптовалют, вероятностный прогноз на 15 минут и многоязычный чат трейдеров: BTC, ETH, SOL, BNB, XRP и другие.">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="SignalPool — графики и чат трейдеров">
+<meta property="og:description" content="5 живых графиков, прогноз на 15 минут, многоязычный чат. BTC, ETH, SOL, BNB, XRP и др.">
+<meta property="og:image" content="https://signalpool.netlify.app/og-image.png">
+<meta property="og:url" content="https://signalpool.netlify.app/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="SignalPool — графики и чат трейдеров">
+<meta name="twitter:description" content="5 живых графиков, прогноз на 15 минут, многоязычный чат.">
+<meta name="twitter:image" content="https://signalpool.netlify.app/og-image.png">
+
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#f2f2f7">
+<link rel="apple-touch-icon" href="/icon-192.png">
+
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  :root {
+    --ios-bg:           #f2f2f7;
+    --ios-bg-elevated:  #ffffff;
+    --ios-label:        #000000;
+    --ios-label-2:      rgba(60, 60, 67, 0.6);
+    --ios-label-3:      rgba(60, 60, 67, 0.3);
+    --ios-separator:    rgba(60, 60, 67, 0.12);
+    --ios-blue:         #007aff;
+    --ios-green:        #34c759;
+    --ios-red:          #ff3b30;
+    --ios-orange:       #ff9500;
+    --ios-yellow:       #ffcc00;
+    --ios-purple:       #af52de;
+    --ios-teal:         #5ac8fa;
+
+    --glass-blur:       20px;
+    --glass-opacity:    0.72;
+    --glass-border:     rgba(255, 255, 255, 0.55);
+    --glass-highlight:  rgba(255, 255, 255, 0.85);
+    --glass-shadow:     0 8px 32px rgba(0, 0, 0, 0.08);
+
+    --settings-opacity: 0.98;
+    --settings-blur:    30px;
+
+    --user-site-bg:     #f2f2f7;
+    --user-chat-bg:     #f2f2f7;
+
+    --r-sm: 10px;
+    --r-md: 14px;
+    --r-lg: 20px;
+    --r-xl: 28px;
+
+    --font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+
+  html[data-theme="dark"] {
+    --ios-bg:           #000000;
+    --ios-bg-elevated:  #1c1c1e;
+    --ios-label:        #ffffff;
+    --ios-label-2:      rgba(235, 235, 245, 0.6);
+    --ios-label-3:      rgba(235, 235, 245, 0.3);
+    --ios-separator:    rgba(84, 84, 88, 0.6);
+    --ios-blue:         #0a84ff;
+    --ios-green:        #30d158;
+    --ios-red:          #ff453a;
+    --ios-orange:       #ff9f0a;
+    --ios-yellow:       #ffd60a;
+    --ios-purple:       #bf5af2;
+    --ios-teal:         #64d2ff;
+
+    --glass-border:     rgba(255, 255, 255, 0.12);
+    --glass-highlight:  rgba(255, 255, 255, 0.18);
+    --glass-shadow:     0 8px 32px rgba(0, 0, 0, 0.45);
+
+    --user-site-bg:     #000000;
+    --user-chat-bg:     #000000;
+  }
+
+  html[data-glass="solid"]  { --glass-opacity: 0.96; --glass-blur: 0px;   --glass-border: rgba(60,60,67,0.2); }
+  html[data-glass="medium"] { --glass-opacity: 0.72; --glass-blur: 20px;  --glass-border: rgba(255,255,255,0.55); }
+  html[data-glass="clear"]  { --glass-opacity: 0.45; --glass-blur: 32px;  --glass-border: rgba(255,255,255,0.35); }
+
+  html, body { height: 100%; }
+
+  body {
+    font-family: var(--font);
+    background: var(--user-site-bg);
+    color: var(--ios-label);
+    display: flex;
+    flex-direction: column;
+    -webkit-font-smoothing: antialiased;
+    transition: background 0.3s, color 0.3s;
+    overflow: hidden;
+  }
+
+  .glass {
+    background: rgba(255, 255, 255, var(--glass-opacity));
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.8);
+    backdrop-filter: blur(var(--glass-blur)) saturate(1.8);
+    border: 1px solid var(--glass-border);
+    box-shadow:
+      inset 0 1px 0 var(--glass-highlight),
+      inset 0 -1px 0 rgba(0,0,0,0.04),
+      var(--glass-shadow);
+  }
+  html[data-theme="dark"] .glass {
+    background: rgba(28, 28, 30, var(--glass-opacity));
+    border-color: var(--glass-border);
+  }
+
+  header {
+    position: sticky; top: 0; z-index: 100;
+    padding: 10px 16px;
+    display: flex; justify-content: space-between; align-items: center;
+    gap: 10px; flex-wrap: wrap;
+    border-bottom: 0.5px solid var(--ios-separator);
+    background: rgba(255, 255, 255, 0.82);
+    -webkit-backdrop-filter: blur(20px) saturate(1.8);
+    backdrop-filter: blur(20px) saturate(1.8);
+  }
+  html[data-theme="dark"] header { background: rgba(0, 0, 0, 0.72); }
+
+  header h1 {
+    font-size: 17px; font-weight: 700; letter-spacing: -0.2px;
+    display: flex; align-items: center; gap: 8px; color: var(--ios-label);
+  }
+
+  .logo-s4 .bg { fill: transparent; }
+  .logo-s4 .wick {
+    stroke: var(--ios-label-2); stroke-width: 2.5;
+    stroke-dasharray: 44; stroke-dashoffset: 44;
+    animation: s4-draw 0.5s ease-out forwards;
+  }
+  .logo-s4 .candle-body {
+    fill: var(--ios-green); transform-origin: 20px 48px; transform: scaleY(0);
+    animation: s4-grow 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.4s forwards;
+  }
+  .logo-s4 .s-path {
+    fill: none; stroke: var(--ios-blue); stroke-width: 3.5; stroke-linecap: round;
+    stroke-dasharray: 90; stroke-dashoffset: 90;
+    animation: s4-draw 1s ease-out 0.9s forwards;
+  }
+  .logo-s4 { animation: s4-breathe 4s ease-in-out 2s infinite; }
+  @keyframes s4-draw { to { stroke-dashoffset: 0; } }
+  @keyframes s4-grow { to { transform: scaleY(1); } }
+  @keyframes s4-breathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.04); } }
+  @media (prefers-reduced-motion: reduce) {
+    .logo-s4 * { animation: none !important; }
+    .logo-s4 .candle-body { transform: scaleY(1); }
+  }
+
+  .header-right { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+
+  .tabs { display: flex; background: var(--ios-label-3); border-radius: 10px; padding: 2px; gap: 2px; }
+  .tab {
+    position: relative; padding: 6px 16px; border-radius: 8px;
+    background: transparent; border: none; color: var(--ios-label);
+    font-size: 13px; font-weight: 600; cursor: pointer;
+    transition: background 0.2s, box-shadow 0.2s;
+    white-space: nowrap; font-family: var(--font);
+  }
+  .tab.active {
+    background: var(--ios-bg-elevated);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.12), 0 0 0 0.5px rgba(0,0,0,0.04);
+  }
+
+  .badge {
+    position: absolute; top: -2px; right: -2px;
+    min-width: 16px; height: 16px; padding: 0 4px;
+    border-radius: 8px; background: var(--ios-red); color: #fff;
+    font-size: 10px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 0 0 1.5px var(--user-site-bg);
+  }
+  .badge.hidden { display: none; }
+
+  .icon-btn, .theme-btn, .settings-btn {
+    width: 34px; height: 34px; border-radius: 50%;
+    background: var(--ios-label-3); border: none;
+    color: var(--ios-label); cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: transform 0.15s, background 0.15s;
+    position: relative; flex-shrink: 0;
+  }
+  .icon-btn:hover, .theme-btn:hover, .settings-btn:hover { background: var(--ios-label-2); }
+  .icon-btn:active, .theme-btn:active, .settings-btn:active { transform: scale(0.92); }
+
+  .lang-select {
+    height: 34px;
+    padding: 0 32px 0 12px;
+    border-radius: 17px;
+    background-color: var(--ios-bg-elevated);
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%23007aff' stroke-width='3'><polyline points='6 9 12 15 18 9'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    border: 0.5px solid var(--ios-separator);
+    color: var(--ios-label);
+    font-size: 13px;
+    font-weight: 500;
+    font-family: var(--font);
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    outline: none;
+    transition: border-color 0.15s, background-color 0.15s;
+  }
+  .lang-select:hover { border-color: var(--ios-label-2); }
+  .lang-select:focus { border-color: var(--ios-blue); }
+  .lang-select option { background-color: #ffffff; color: #000000; font-family: var(--font); }
+  html[data-theme="dark"] .lang-select option { background-color: #1c1c1e; color: #ffffff; }
+
+  .has-tooltip { position: relative; }
+  .has-tooltip::after {
+    content: attr(data-tooltip);
+    position: absolute; top: calc(100% + 8px); left: 50%;
+    transform: translateX(-50%) translateY(-4px);
+    background: var(--ios-bg-elevated); color: var(--ios-label);
+    border: 0.5px solid var(--ios-separator);
+    padding: 6px 10px; border-radius: 8px;
+    font-size: 12px; font-weight: 500; white-space: nowrap;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.15s, transform 0.15s;
+    z-index: 200;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+  }
+  .has-tooltip:hover::after { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  .page { display: none; flex: 1; flex-direction: column; min-height: 0; }
+  .page.active { display: flex; }
+
+  .ticker-wrap { padding: 4px 0; flex-shrink: 0; border-bottom: 0.5px solid var(--ios-separator); }
+
+  main.charts-main { padding: 16px; width: 100%; overflow-y: auto; flex: 1; -webkit-overflow-scrolling: touch; }
+
+  .disclaimer {
+    color: var(--ios-label-2); font-size: 12px; text-align: center;
+    padding: 8px 12px; border-radius: var(--r-sm);
+    margin-bottom: 16px; background: var(--ios-label-3);
+  }
+
+  .mini-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; margin-bottom: 20px; width: 100%; }
+  @media (max-width: 1100px) { .mini-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  @media (max-width: 640px) { .mini-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; } }
+
+  .mini-chart {
+    background: var(--ios-bg-elevated); border-radius: var(--r-md);
+    overflow: hidden; position: relative; aspect-ratio: 1 / 1;
+    cursor: pointer; transition: transform 0.15s, box-shadow 0.15s;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+  .mini-chart:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+  .mini-chart iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: none; pointer-events: none; }
+  .mini-chart::before {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(90deg, var(--ios-bg-elevated) 25%, var(--ios-bg) 50%, var(--ios-bg-elevated) 75%);
+    background-size: 200% 100%; animation: shimmer 1.4s infinite;
+    z-index: 1; transition: opacity 0.4s;
+  }
+  .mini-chart.loaded::before { opacity: 0; pointer-events: none; }
+  @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+  .forecast-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; margin-bottom: 20px; }
+  @media (max-width: 1100px) { .forecast-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  @media (max-width: 640px) { .forecast-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+  .forecast-card {
+    background: var(--ios-bg-elevated); border-radius: var(--r-md);
+    padding: 12px; display: flex; flex-direction: column; gap: 4px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    transition: transform 0.15s;
+  }
+  .forecast-card:active { transform: scale(0.98); }
+
+  .fc-top { display: flex; justify-content: space-between; align-items: center; }
+  .fc-symbol { font-weight: 700; color: var(--ios-label); font-size: 15px; }
+  .fc-price { font-size: 12px; color: var(--ios-label-2); font-variant-numeric: tabular-nums; }
+  .fc-price.up { color: var(--ios-green); }
+  .fc-price.down { color: var(--ios-red); }
+
+  .fc-arrow { font-size: 24px; line-height: 1; text-align: center; margin: 2px 0; font-weight: 800; }
+  .fc-arrow.up   { color: var(--ios-green); }
+  .fc-arrow.down { color: var(--ios-red); }
+  .fc-arrow.flat { color: var(--ios-label-3); }
+
+  .fc-dir { text-align: center; font-size: 13px; font-weight: 600; margin-bottom: 2px; }
+  .fc-dir.up   { color: var(--ios-green); }
+  .fc-dir.down { color: var(--ios-red); }
+  .fc-dir.flat { color: var(--ios-label-2); }
+
+  .fc-bar { height: 4px; background: var(--ios-label-3); border-radius: 2px; overflow: hidden; position: relative; margin-bottom: 2px; }
+  .fc-bar .fill { position: absolute; top: 0; height: 100%; border-radius: 2px; transition: width 0.4s; }
+  .fc-bar .fill.up { background: var(--ios-green); left: 50%; }
+  .fc-bar .fill.down { background: var(--ios-red); right: 50%; }
+
+  .fc-meta { display: flex; justify-content: space-between; font-size: 10px; color: var(--ios-label-3); margin-top: 2px; }
+  .fc-confidence { text-align: center; font-size: 11px; color: var(--ios-label-2); margin-top: 2px; font-variant-numeric: tabular-nums; }
+  .fc-loading { text-align: center; color: var(--ios-label-2); font-size: 13px; padding: 16px 0; }
+
+  section h2 { font-size: 20px; font-weight: 700; letter-spacing: -0.3px; margin: 24px 0 12px; color: var(--ios-label); display: flex; align-items: center; gap: 8px; }
+  .forecast-head h2 { margin: 0; }
+  .forecast-head { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin: 24px 0 12px; }
+
+  .btn-refresh, .btn-share-forecast {
+    padding: 8px 16px; border-radius: 18px; border: none;
+    background: var(--ios-label-3); color: var(--ios-label);
+    font-size: 13px; font-weight: 600; font-family: var(--font);
+    cursor: pointer; transition: transform 0.15s, background 0.15s;
+  }
+  .btn-refresh:active, .btn-share-forecast:active { transform: scale(0.95); }
+  .btn-refresh:hover { background: var(--ios-label-2); }
+  .btn-share-forecast { background: var(--ios-blue); color: #fff; margin-right: 6px; }
+  .btn-share-forecast:hover { background: #0066d6; }
+  .forecast-updated { font-size: 11px; color: var(--ios-label-3); margin-left: 8px; }
+
+  .controls { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; align-items: center; }
+  .coin-buttons, .tf-buttons { display: flex; flex-wrap: wrap; gap: 4px; }
+
+  .chip {
+    padding: 6px 14px; border-radius: 16px;
+    background: var(--ios-label-3); border: none;
+    color: var(--ios-label); font-size: 13px; font-weight: 500;
+    font-family: var(--font); cursor: pointer;
+    transition: transform 0.15s, background 0.15s;
+  }
+  .chip:active { transform: scale(0.94); }
+  .chip.active { background: var(--ios-blue); color: #fff; }
+  .tf-buttons { margin-left: auto; }
+  .tf-buttons .chip { padding: 5px 12px; font-size: 12px; }
+
+  .chart-container {
+    background: var(--ios-bg-elevated); border-radius: var(--r-lg);
+    overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    position: relative; min-height: 500px;
+  }
+  .chart-container iframe { display: block; width: 100%; height: 500px; border: none; }
+  .chart-container .chart-skeleton {
+    position: absolute; inset: 0; z-index: 2;
+    background: linear-gradient(90deg, var(--ios-bg-elevated) 25%, var(--ios-bg) 50%, var(--ios-bg-elevated) 75%);
+    background-size: 200% 100%; animation: shimmer 1.4s infinite;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--ios-label-2); font-size: 13px;
+    transition: opacity 0.4s;
+  }
+  .chart-container.loaded .chart-skeleton { opacity: 0; pointer-events: none; }
+
+  @media (max-width: 640px) {
+    .chart-container { min-height: 360px; }
+    .chart-container iframe { height: 360px; }
+    .tf-buttons { margin-left: 0; width: 100%; }
+  }
+
+  .layout-bar {
+    display: flex; flex-wrap: wrap; gap: 6px; align-items: center;
+    margin: 20px 0 12px; padding: 10px 14px;
+    border-radius: var(--r-md); background: var(--ios-bg-elevated);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+  .layout-bar .lb-title { font-size: 13px; font-weight: 600; color: var(--ios-label-2); margin-right: 6px; }
+  .layout-bar button, .layout-bar label {
+    padding: 6px 12px; border-radius: 14px;
+    background: var(--ios-label-3); border: none;
+    color: var(--ios-label); font-size: 12px; font-weight: 500;
+    font-family: var(--font); cursor: pointer;
+    transition: transform 0.15s;
+  }
+  .layout-bar button:active { transform: scale(0.94); }
+  .layout-bar button.active { background: var(--ios-blue); color: #fff; }
+  .layout-bar .lb-reset { margin-left: auto; background: transparent; }
+  .layout-bar .lb-divider { width: 1px; height: 20px; background: var(--ios-separator); margin: 0 4px; }
+  .layout-bar .lb-presets { display: flex; gap: 4px; flex-wrap: wrap; }
+
+  .blocks-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+  @media (max-width: 900px) { .blocks-row { grid-template-columns: 1fr; } }
+
+  .block {
+    background: var(--ios-bg-elevated); border-radius: var(--r-lg);
+    overflow: hidden; display: flex; flex-direction: column;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    transition: opacity 0.2s, box-shadow 0.15s, transform 0.15s;
+  }
+  .block.hidden-block { display: none; }
+  .block.dragging { opacity: 0.5; transform: scale(0.98); }
+  .block.drag-over { box-shadow: 0 0 0 2px var(--ios-blue); }
+
+  .block-header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 14px; background: var(--ios-bg);
+    border-bottom: 0.5px solid var(--ios-separator);
+    gap: 8px; flex-wrap: wrap; flex-shrink: 0;
+    cursor: grab; user-select: none;
+  }
+  .block-header:active { cursor: grabbing; }
+  .block-header h2 { font-size: 14px; margin: 0; color: var(--ios-label); pointer-events: none; }
+  .block-header .block-controls { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--ios-label-2); cursor: default; }
+  .block-header .block-controls input[type="range"] { width: 80px; accent-color: var(--ios-blue); cursor: pointer; }
+  .block-header .block-controls .val { min-width: 38px; text-align: right; font-variant-numeric: tabular-nums; font-size: 11px; }
+  .block-header .block-controls button {
+    width: 24px; height: 24px; border-radius: 50%;
+    background: var(--ios-label-3); border: none;
+    color: var(--ios-label-2); cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; transition: background 0.15s;
+  }
+  .block-header .block-controls button:hover { background: var(--ios-red); color: #fff; }
+
+  .block-body { position: relative; width: 100%; overflow: hidden; transition: height 0.2s ease; }
+  .block-body iframe { display: block; width: 100%; height: 100%; border: none; }
+
+  .hidden-blocks-bar { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 20px; }
+  .hidden-blocks-bar:empty { display: none; }
+  .hidden-blocks-bar button {
+    padding: 8px 14px; border-radius: 16px;
+    background: var(--ios-label-3); border: none;
+    color: var(--ios-label); font-size: 12px;
+    font-family: var(--font); cursor: pointer;
+  }
+
+  .chat-page { background: var(--user-chat-bg); transition: background 0.3s; }
+
+  .chat-header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 12px 16px; background: var(--ios-bg-elevated);
+    border-bottom: 0.5px solid var(--ios-separator);
+    gap: 10px; flex-wrap: wrap; flex-shrink: 0;
+  }
+  .chat-header h2 { font-size: 17px; font-weight: 700; color: var(--ios-label); display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .online-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; color: var(--ios-green); font-weight: 500; }
+  .online-badge .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--ios-green); animation: pulse 2s infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+  .user-box { display: flex; align-items: center; gap: 8px; }
+  .user-box img { width: 28px; height: 28px; border-radius: 50%; }
+  .user-box .name { font-size: 13px; color: var(--ios-label); max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 500; }
+
+  .btn {
+    padding: 7px 16px; border-radius: 18px;
+    background: var(--ios-blue); color: #fff;
+    border: none; font-weight: 600; font-size: 13px;
+    font-family: var(--font); cursor: pointer;
+    transition: transform 0.15s, background 0.15s;
+  }
+  .btn:active { transform: scale(0.95); }
+  .btn.logout { background: var(--ios-label-3); color: var(--ios-label); }
+
+  .google-btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: #fff; color: #1c1c1e;
+    font-weight: 600; padding: 12px 24px;
+    border: 1px solid rgba(0,0,0,0.1);
+    border-radius: 24px; cursor: pointer; font-size: 15px;
+    font-family: var(--font);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    transition: transform 0.15s;
+  }
+  .google-btn:active { transform: scale(0.97); }
+  .google-btn svg { width: 20px; height: 20px; }
+
+  .login-overlay {
+    flex: 1; display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 16px; padding: 30px 20px; text-align: center;
+  }
+  .login-overlay h2 { font-size: 22px; font-weight: 700; color: var(--ios-label); }
+  .login-overlay p { color: var(--ios-label-2); font-size: 14px; max-width: 380px; line-height: 1.4; }
+
+  .rooms {
+    display: flex; gap: 4px; padding: 8px 16px;
+    background: var(--ios-bg-elevated);
+    border-bottom: 0.5px solid var(--ios-separator);
+    overflow-x: auto; flex-shrink: 0;
+  }
+  .room-tab {
+    padding: 6px 14px; border-radius: 14px;
+    background: transparent; border: none;
+    color: var(--ios-label-2); cursor: pointer;
+    font-size: 13px; white-space: nowrap; font-family: var(--font);
+    font-weight: 500;
+    transition: background 0.15s, color 0.15s;
+  }
+  .room-tab:hover { background: var(--ios-label-3); }
+  .room-tab.active { background: var(--ios-blue); color: #fff; font-weight: 600; }
+
+  .chat-note {
+    background: rgba(0,0,0,0.04); color: var(--ios-label-3);
+    font-size: 11px; text-align: center;
+    padding: 6px 12px;
+    border-bottom: 0.5px solid var(--ios-separator);
+    flex-shrink: 0;
+  }
+  html[data-theme="dark"] .chat-note { background: rgba(255,255,255,0.04); }
+
+  #chatArea { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-height: 0; position: relative; }
+  #messages {
+    flex: 1; overflow-y: auto; padding: 16px;
+    display: flex; flex-direction: column; gap: 8px;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .date-sep { text-align: center; color: var(--ios-label-3); font-size: 11px; margin: 12px 0 4px; font-weight: 500; }
+
+  .msg {
+    background: var(--ios-bg-elevated);
+    border-radius: 18px; padding: 10px 14px;
+    max-width: 78%; word-wrap: break-word;
+    position: relative;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+    animation: pop 0.2s ease;
+  }
+  @keyframes pop { from { opacity: 0; transform: translateY(6px) scale(0.98); } to { opacity: 1; transform: none; } }
+
+  .msg .head { display: flex; align-items: center; gap: 6px; margin-bottom: 2px; }
+  .msg .head img { width: 16px; height: 16px; border-radius: 50%; }
+  .msg .name { font-size: 12px; color: var(--ios-blue); font-weight: 600; }
+  .msg .time { font-size: 10px; color: var(--ios-label-3); margin-left: auto; }
+  .msg .text { font-size: 15px; color: var(--ios-label); white-space: pre-wrap; word-break: break-word; line-height: 1.35; }
+  .msg .delete-btn {
+    position: absolute; top: 4px; right: 4px;
+    background: none; border: none; color: var(--ios-label-3);
+    cursor: pointer; font-size: 12px; opacity: 0;
+    padding: 2px 6px; border-radius: 8px;
+    transition: opacity 0.15s;
+  }
+  .msg:hover .delete-btn { opacity: 1; }
+  .msg .delete-btn:hover { background: var(--ios-red); color: #fff; }
+
+  form.chat-form {
+    display: flex; gap: 8px; padding: 10px 16px;
+    background: var(--ios-bg-elevated);
+    border-top: 0.5px solid var(--ios-separator);
+    flex-shrink: 0; align-items: flex-end;
+  }
+  form.chat-form textarea {
+    flex: 1; padding: 10px 14px; border-radius: 20px;
+    border: 0.5px solid var(--ios-separator);
+    background: var(--ios-bg);
+    color: var(--ios-label); font-size: 15px; font-family: var(--font);
+    outline: none; resize: none; max-height: 100px; min-height: 40px;
+    line-height: 1.35;
+    transition: border-color 0.15s;
+  }
+  form.chat-form textarea:focus { border-color: var(--ios-blue); }
+  form.chat-form textarea::placeholder { color: var(--ios-label-3); }
+  form.chat-form button {
+    padding: 10px 16px; border: none; border-radius: 20px;
+    background: var(--ios-blue); color: #fff;
+    font-weight: 600; font-size: 15px; font-family: var(--font);
+    cursor: pointer; height: 40px; flex-shrink: 0;
+    transition: transform 0.15s, opacity 0.15s;
+  }
+  form.chat-form button:active { transform: scale(0.94); }
+  form.chat-form button:disabled { opacity: 0.3; cursor: not-allowed; }
+
+  .scroll-top {
+    position: absolute; bottom: 76px; right: 16px;
+    width: 36px; height: 36px; border-radius: 50%;
+    background: var(--ios-bg-elevated); color: var(--ios-blue);
+    border: 0.5px solid var(--ios-separator);
+    cursor: pointer; font-size: 16px; font-weight: 700;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.2s, transform 0.2s;
+    z-index: 5;
+  }
+  .scroll-top.show { opacity: 1; pointer-events: auto; }
+  .scroll-top:active { transform: scale(0.9); }
+
+  .modal-backdrop {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.4);
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
+    z-index: 300;
+    align-items: center; justify-content: center;
+    padding: 20px;
+  }
+  .modal-backdrop.open { display: flex; }
+
+  .modal {
+    background: var(--ios-bg-elevated);
+    border-radius: var(--r-xl);
+    max-width: 420px; width: 100%;
+    max-height: 85vh; overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+    animation: sheetIn 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+  }
+  @keyframes sheetIn {
+    from { opacity: 0; transform: translateY(20px) scale(0.96); }
+    to { opacity: 1; transform: none; }
+  }
+
+  .modal-header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 16px 20px;
+    border-bottom: 0.5px solid var(--ios-separator);
+    position: sticky; top: 0; background: var(--ios-bg-elevated);
+    z-index: 1; border-radius: var(--r-xl) var(--r-xl) 0 0;
+  }
+  .modal-header h3 { font-size: 17px; font-weight: 700; color: var(--ios-label); margin: 0; }
+  .modal-close {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--ios-label-3); border: none;
+    color: var(--ios-label-2); cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; transition: background 0.15s;
+  }
+  .modal-close:hover { background: var(--ios-red); color: #fff; }
+
+  .modal-body { padding: 20px; }
+
+  .widget-row { display: flex; gap: 8px; align-items: center; margin-bottom: 12px; flex-wrap: wrap; }
+  .widget select, .widget input {
+    padding: 10px 14px; border-radius: 12px;
+    background: var(--ios-bg);
+    border: 0.5px solid var(--ios-separator);
+    color: var(--ios-label); font-size: 15px;
+    font-family: var(--font); outline: none;
+  }
+  .widget select { cursor: pointer; }
+  .widget select option { background: #ffffff; color: #000000; }
+  html[data-theme="dark"] .widget select option { background: #1c1c1e; color: #ffffff; }
+  .widget input:focus { border-color: var(--ios-blue); }
+  .widget input[type="number"] { width: 100px; }
+
+  .conv-result { font-size: 26px; font-weight: 700; color: var(--ios-label); margin-top: 12px; font-variant-numeric: tabular-nums; }
+  .conv-result small { color: var(--ios-label-2); font-weight: 400; font-size: 12px; display: block; margin-top: 2px; }
+
+  .portfolio-item {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 0; border-bottom: 0.5px solid var(--ios-separator);
+    font-size: 15px;
+  }
+  .portfolio-item:last-child { border-bottom: none; }
+  .portfolio-item .remove-btn { background: none; border: none; color: var(--ios-label-3); cursor: pointer; font-size: 16px; padding: 0 4px; }
+  .portfolio-item .remove-btn:hover { color: var(--ios-red); }
+  .portfolio-total { margin-top: 12px; padding-top: 12px; border-top: 0.5px solid var(--ios-separator); font-size: 17px; font-weight: 700; color: var(--ios-label); }
+
+  .toast {
+    position: fixed; bottom: 20px; left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: var(--ios-bg-elevated); color: var(--ios-label);
+    border: 0.5px solid var(--ios-separator);
+    padding: 12px 20px; border-radius: 14px;
+    font-size: 14px; font-weight: 500;
+    max-width: 90%; z-index: 400;
+    opacity: 0; transition: all 0.3s;
+    pointer-events: none; text-align: center;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .toast.success { border-color: var(--ios-green); color: var(--ios-green); }
+
+  .hidden { display: none !important; }
+
+  .mobile-nav { display: none; }
+  @media (max-width: 768px) {
+    .tabs { display: none; }
+    .mobile-nav {
+      display: flex; position: fixed;
+      bottom: 0; left: 0; right: 0;
+      background: rgba(255,255,255,0.88);
+      -webkit-backdrop-filter: blur(20px) saturate(1.8);
+      backdrop-filter: blur(20px) saturate(1.8);
+      border-top: 0.5px solid var(--ios-separator);
+      z-index: 100;
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+    html[data-theme="dark"] .mobile-nav { background: rgba(0,0,0,0.78); }
+    .mobile-nav button {
+      flex: 1; padding: 8px 4px 6px;
+      background: none; border: none;
+      color: var(--ios-label-2);
+      font-size: 10px; font-weight: 500; font-family: var(--font);
+      cursor: pointer; display: flex;
+      flex-direction: column; align-items: center; gap: 2px;
+      transition: color 0.15s;
+    }
+    .mobile-nav button svg { width: 22px; height: 22px; }
+    .mobile-nav button.active { color: var(--ios-blue); }
+    body { padding-bottom: 60px; }
+    main.charts-main { padding-bottom: 72px; }
+    .scroll-top { bottom: 68px; }
+    footer { display: none; }
+    header { padding: 8px 12px; }
+    header h1 { font-size: 15px; }
+  }
+
+  footer {
+    text-align: center; padding: 16px;
+    color: var(--ios-label-3); font-size: 11px;
+    border-top: 0.5px solid var(--ios-separator);
+    background: var(--ios-bg-elevated);
+    flex-shrink: 0;
+  }
+
+  .settings-panel {
+    position: fixed; top: 0; right: 0; bottom: 0;
+    width: 340px; max-width: 90vw;
+    background: rgba(255, 255, 255, var(--settings-opacity));
+    -webkit-backdrop-filter: blur(var(--settings-blur)) saturate(1.8);
+    backdrop-filter: blur(var(--settings-blur)) saturate(1.8);
+    z-index: 500;
+    box-shadow: -8px 0 40px rgba(0,0,0,0.15);
+    transform: translateX(100%);
+    transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1), background 0.3s;
+    display: flex; flex-direction: column;
+    overflow-y: auto;
+    border-left: 0.5px solid var(--ios-separator);
+  }
+  html[data-theme="dark"] .settings-panel { background: rgba(28, 28, 30, var(--settings-opacity)); }
+  .settings-panel.open { transform: translateX(0); }
+
+  .settings-header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 16px 20px;
+    border-bottom: 0.5px solid var(--ios-separator);
+    position: sticky; top: 0;
+    background: inherit;
+    z-index: 1;
+  }
+  .settings-header h2 { font-size: 20px; font-weight: 700; color: var(--ios-label); margin: 0; }
+
+  .settings-body { padding: 16px 20px 32px; display: flex; flex-direction: column; gap: 22px; }
+
+  .settings-group { display: flex; flex-direction: column; gap: 8px; }
+  .settings-group > label {
+    font-size: 12px; font-weight: 700; color: var(--ios-label-2);
+    text-transform: uppercase; letter-spacing: 0.4px;
+  }
+
+  .ios-slider {
+    -webkit-appearance: none; appearance: none;
+    width: 100%; height: 4px; border-radius: 2px;
+    background: var(--ios-label-3); outline: none; margin: 8px 0;
+  }
+  .ios-slider::-webkit-slider-thumb {
+    -webkit-appearance: none; appearance: none;
+    width: 24px; height: 24px; border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.25), 0 0 0 0.5px rgba(0,0,0,0.08);
+    cursor: pointer; transition: transform 0.1s;
+  }
+  .ios-slider::-webkit-slider-thumb:active { transform: scale(1.1); }
+  .ios-slider::-moz-range-thumb {
+    width: 24px; height: 24px; border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.25);
+    cursor: pointer; border: none;
+  }
+
+  .slider-row { display: flex; align-items: center; gap: 12px; }
+  .slider-row .val {
+    font-size: 13px; color: var(--ios-label-2);
+    min-width: 44px; text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .ios-toggle {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 6px 0;
+  }
+  .ios-toggle span { font-size: 15px; color: var(--ios-label); }
+  .toggle-switch {
+    width: 51px; height: 31px; border-radius: 16px;
+    background: var(--ios-label-3); position: relative;
+    cursor: pointer; transition: background 0.2s; flex-shrink: 0;
+  }
+  .toggle-switch.on { background: var(--ios-green); }
+  .toggle-switch::after {
+    content: '';
+    position: absolute; top: 2px; left: 2px;
+    width: 27px; height: 27px; border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .toggle-switch.on::after { transform: translateX(20px); }
+
+  .color-palette { display: flex; flex-wrap: wrap; gap: 8px; }
+  .color-swatch {
+    width: 36px; height: 36px; border-radius: 50%;
+    border: 2px solid transparent;
+    cursor: pointer; position: relative;
+    transition: transform 0.15s, box-shadow 0.15s;
+    padding: 0;
+    flex-shrink: 0;
+  }
+  .color-swatch:hover { transform: scale(1.08); }
+  .color-swatch.active {
+    border-color: var(--ios-blue);
+    box-shadow: 0 0 0 2px var(--ios-bg-elevated), 0 0 0 4px var(--ios-blue);
+  }
+
+  .color-picker-row { display: flex; align-items: center; gap: 10px; padding: 8px 0; }
+  .color-picker-row input[type="color"] {
+    width: 44px; height: 32px;
+    border: none; border-radius: 8px;
+    cursor: pointer; padding: 0;
+    background: transparent;
+  }
+  .color-picker-row input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
+  .color-picker-row input[type="color"]::-webkit-color-swatch {
+    border: 1px solid var(--ios-separator);
+    border-radius: 8px;
+  }
+  .color-picker-row input[type="color"]::-moz-color-swatch {
+    border: 1px solid var(--ios-separator);
+    border-radius: 8px;
+  }
+  .color-picker-row span { font-size: 13px; color: var(--ios-label-2); }
+  .color-picker-row .hex {
+    font-family: 'SF Mono', Menlo, monospace;
+    font-size: 12px; color: var(--ios-label-2);
+    background: var(--ios-label-3);
+    padding: 4px 8px; border-radius: 6px;
+    margin-left: auto;
+  }
+
+  .btn-reset-colors {
+    padding: 10px 16px;
+    border-radius: 14px;
+    background: var(--ios-label-3);
+    border: none;
+    color: var(--ios-label);
+    font-size: 14px;
+    font-weight: 600;
+    font-family: var(--font);
+    cursor: pointer;
+    align-self: flex-start;
+    transition: background 0.15s;
+  }
+  .btn-reset-colors:hover { background: var(--ios-label-2); }
+
+  .settings-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.3);
+    z-index: 400;
+  }
+  .settings-overlay.open { display: block; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>
+    <svg width="30" height="30" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" class="logo-s4" aria-hidden="true">
+      <line class="wick" x1="20" y1="10" x2="20" y2="54"/>
+      <rect class="candle-body" x="14" y="16" width="12" height="32" rx="3"/>
+      <path class="s-path"
+            d="M 40 22 C 40 15, 26 15, 26 24 C 26 31, 48 33, 48 42 C 48 51, 34 51, 34 44"/>
+    </svg>
+    SignalPool
+  </h1>
+  <div class="header-right">
+    <div class="tabs">
+      <button class="tab active" data-page="charts" id="tabCharts" data-i18n="tab_charts">Графики</button>
+      <button class="tab" data-page="chat" id="tabChat" data-i18n="tab_chat">
+        Чат
+        <span class="badge hidden" id="unreadBadge">0</span>
+      </button>
+    </div>
+    <button class="icon-btn has-tooltip" id="converterBtn" data-tooltip="Конвертер" aria-label="Converter">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="12" y1="1" x2="12" y2="23"/>
+        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+      </svg>
+    </button>
+    <button class="icon-btn has-tooltip" id="portfolioBtn" data-tooltip="Портфель" aria-label="Portfolio">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/>
+        <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+      </svg>
+    </button>
+    <select class="lang-select" id="langSelect" aria-label="Language"></select>
+    <button class="theme-btn" id="themeBtn" title="Theme" aria-label="Theme">
+      <svg id="themeIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    </button>
+    <button class="settings-btn has-tooltip" id="settingsBtn" data-tooltip="Настройки" aria-label="Settings">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+      </svg>
+    </button>
+    <button class="icon-btn" id="shareBtn" title="Share" aria-label="Share">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+      </svg>
+    </button>
+  </div>
+</header>
+
+<!-- ГРАФИКИ -->
+<section class="page active" id="page-charts">
+
+  <div class="ticker-wrap">
+    <div class="tradingview-widget-container">
+      <div class="tradingview-widget-container__widget"></div>
+      <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
+      {
+        "symbols": [
+          {"proName": "BINANCE:BTCUSDT", "title": "BTC"},
+          {"proName": "BINANCE:ETHUSDT", "title": "ETH"},
+          {"proName": "BINANCE:SOLUSDT", "title": "SOL"},
+          {"proName": "BINANCE:BNBUSDT", "title": "BNB"},
+          {"proName": "BINANCE:XRPUSDT", "title": "XRP"},
+          {"proName": "BINANCE:ADAUSDT", "title": "ADA"},
+          {"proName": "BINANCE:DOGEUSDT", "title": "DOGE"},
+          {"proName": "BINANCE:AVAXUSDT", "title": "AVAX"},
+          {"proName": "BINANCE:LINKUSDT", "title": "LINK"},
+          {"proName": "BINANCE:TONUSDT",  "title": "TON"}
+        ],
+        "showSymbolLogo": true, "isTransparent": true, "displayMode": "adaptive",
+        "colorTheme": "light", "locale": "ru"
+      }
+      </script>
+    </div>
+  </div>
+
+  <main class="charts-main">
+    <div class="disclaimer" data-i18n="disclaimer">
+      ⚠️ Не является инвестиционной рекомендацией. Торговля криптовалютой связана с высоким риском. DYOR.
+    </div>
+
+    <section>
+      <h2 data-i18n="quick_overview">Быстрый обзор · 5 монет</h2>
+      <div class="mini-grid" id="miniGrid"></div>
+    </section>
+
+    <section>
+      <div class="forecast-head">
+        <h2 data-i18n="forecast_title">Прогноз на 15 минут</h2>
+        <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+          <button class="btn-share-forecast" id="shareForecast" data-i18n="forecast_share">Поделиться</button>
+          <button class="btn-refresh" id="forecastRefresh" data-i18n="forecast_refresh">Обновить</button>
+          <span class="forecast-updated" id="forecastUpdated"></span>
+        </div>
+      </div>
+      <div style="color:var(--ios-label-2);font-size:11px;text-align:center;padding:6px 12px;border-radius:10px;background:var(--ios-label-3);margin:8px 0 12px;">
+        <span data-i18n="forecast_disclaimer">⚠️ Вероятностная сводка индикаторов, не предсказание цены. DYOR.</span>
+      </div>
+      <div class="forecast-grid" id="forecastGrid">
+        <div class="fc-loading" style="grid-column:1/-1;" data-i18n="forecast_loading">Загрузка данных с Binance…</div>
+      </div>
+    </section>
+
+    <section>
+      <h2 data-i18n="detailed_chart">Детальный график</h2>
+      <div class="controls">
+        <div class="coin-buttons" id="coinButtons"></div>
+        <div class="tf-buttons" id="tfButtons"></div>
+      </div>
+      <div class="chart-container" id="chartContainer">
+        <div class="chart-skeleton" data-i18n="chart_loading">Загрузка графика…</div>
+        <iframe id="tvFrame" src="" allowfullscreen title="Chart"></iframe>
+      </div>
+    </section>
+
+    <div class="layout-bar" id="layoutBar">
+      <span class="lb-title" data-i18n="layout_title">Блоки:</span>
+      <button id="toggleCalendarBtn" data-block="calendar" data-i18n="layout_calendar">Календарь</button>
+      <button id="toggleMarketBtn" data-block="market" data-i18n="layout_market">Обзор рынка</button>
+      <div class="lb-divider"></div>
+      <div class="lb-presets">
+        <button class="preset" data-preset="compact" data-i18n="layout_preset_compact">Компактно</button>
+        <button class="preset" data-preset="max" data-i18n="layout_preset_max">Максимум</button>
+        <button class="preset" data-preset="charts" data-i18n="layout_preset_charts">Только графики</button>
+      </div>
+      <button class="lb-reset" id="resetLayoutBtn" data-i18n="layout_reset">Сбросить</button>
+    </div>
+
+    <div class="blocks-row" id="blocksRow">
+      <div class="block" id="blockCalendar" data-block="calendar" draggable="true">
+        <div class="block-header">
+          <h2 data-i18n="calendar_title">📅 Календарь</h2>
+          <div class="block-controls">
+            <input type="range" min="200" max="900" step="10" id="calRange" aria-label="Height">
+            <span class="val" id="calVal">450px</span>
+            <button id="calHide" title="Hide" aria-label="Hide">✕</button>
+          </div>
+        </div>
+        <div class="block-body" id="calBody" style="height:450px;">
+          <div class="tradingview-widget-container" id="calWidget">
+            <div class="tradingview-widget-container__widget"></div>
+            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-events.js" async>
+            {
+              "colorTheme": "light",
+              "isTransparent": true,
+              "width": "100%",
+              "height": "100%",
+              "locale": "ru",
+              "importanceFilter": "0,1",
+              "countryFilter": "us,eu,gb,jp,cn"
+            }
+            </script>
+          </div>
+        </div>
+      </div>
+
+      <div class="block" id="blockMarket" data-block="market" draggable="true">
+        <div class="block-header">
+          <h2 data-i18n="market_overview">📊 Обзор рынка</h2>
+          <div class="block-controls">
+            <input type="range" min="200" max="900" step="10" id="marketRange" aria-label="Height">
+            <span class="val" id="marketVal">520px</span>
+            <button id="marketHide" title="Hide" aria-label="Hide">✕</button>
+          </div>
+        </div>
+        <div class="block-body" id="marketBody" style="height:520px;">
+          <div class="tradingview-widget-container" id="marketWidget">
+            <div class="tradingview-widget-container__widget"></div>
+            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-overview.js" async>
+            {
+              "colorTheme": "light",
+              "dateRange": "1D",
+              "showChart": true,
+              "locale": "ru",
+              "width": "100%",
+              "height": "100%",
+              "isTransparent": true,
+              "showSymbolLogo": true,
+              "showFloatingTooltip": true,
+              "tabs": [
+                {
+                  "title": "Crypto",
+                  "symbols": [
+                    {"s": "BINANCE:BTCUSDT",  "d": "Bitcoin"},
+                    {"s": "BINANCE:ETHUSDT",  "d": "Ethereum"},
+                    {"s": "BINANCE:SOLUSDT",  "d": "Solana"},
+                    {"s": "BINANCE:BNBUSDT",  "d": "BNB"},
+                    {"s": "BINANCE:XRPUSDT",  "d": "XRP"},
+                    {"s": "BINANCE:ADAUSDT",  "d": "Cardano"},
+                    {"s": "BINANCE:DOGEUSDT", "d": "Dogecoin"},
+                    {"s": "BINANCE:AVAXUSDT", "d": "Avalanche"},
+                    {"s": "BINANCE:LINKUSDT", "d": "Chainlink"},
+                    {"s": "BINANCE:TONUSDT",  "d": "Toncoin"}
+                  ],
+                  "originalTitle": "Crypto"
+                }
+              ]
+            }
+            </script>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hidden-blocks-bar" id="hiddenBar"></div>
+  </main>
+
+  <footer>
+    <span data-i18n="footer">© 2026 SignalPool · Данные предоставлены TradingView</span>
+    · <span id="siteOnline">0</span> <span data-i18n="online">онлайн</span>
+  </footer>
+</section>
+
+<!-- ЧАТ -->
+<section class="page chat-page" id="page-chat">
+  <div class="chat-header">
+    <h2>
+      <span data-i18n="chat_title">Чат трейдеров</span>
+      <span class="online-badge" id="onlineBadge" hidden>
+        <span class="dot"></span><span id="onlineCount">0</span> <span data-i18n="online">онлайн</span>
+      </span>
+    </h2>
+    <div class="user-box" id="userBox"></div>
+  </div>
+
+  <div class="login-overlay" id="loginOverlay">
+    <h2 data-i18n="login_title">Вход в чат</h2>
+    <p data-i18n="login_desc">Чат доступен только авторизованным пользователям. Войдите через Google — это займёт 2 секунды.</p>
+    <button class="google-btn" id="googleLoginBtn">
+      <svg viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+      <span data-i18n="login_google">Войти через Google</span>
+    </button>
+  </div>
+
+  <div id="chatArea" class="hidden">
+    <div class="rooms" id="rooms"></div>
+    <div class="chat-note" data-i18n="chat_note">
+      Мнения участников — не инвестиционная рекомендация. Уважайте собеседников.
+    </div>
+    <div id="messages"></div>
+    <button class="scroll-top" id="scrollTop" title="↑" aria-label="Scroll to top">↑</button>
+    <form class="chat-form" id="chatForm">
+      <textarea id="textInput" placeholder="Сообщение..." maxlength="500" rows="1" disabled></textarea>
+      <button type="submit" id="sendBtn" disabled>➤</button>
+    </form>
+  </div>
+</section>
+
+<nav class="mobile-nav" id="mobileNav">
+  <button data-page="charts" class="active" id="mobCharts">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+    <span data-i18n="tab_charts">Графики</span>
+  </button>
+  <button data-page="chat" id="mobChat">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    <span data-i18n="tab_chat">Чат</span>
+    <span class="badge hidden" id="unreadBadgeMob">0</span>
+  </button>
+</nav>
+
+<div class="modal-backdrop" id="converterModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 data-i18n="converter_title">Конвертер</h3>
+      <button class="modal-close" data-close="converterModal" aria-label="Close">✕</button>
+    </div>
+    <div class="modal-body widget">
+      <div class="widget-row">
+        <input type="number" id="convAmount" value="1" min="0" step="any" aria-label="Amount">
+        <select id="convCoin" aria-label="Coin"></select>
+        <span style="color:var(--ios-label-2);">→</span>
+        <select id="convFiat" aria-label="Fiat">
+          <option value="USDT">USD</option>
+          <option value="EUR">EUR</option>
+          <option value="RUB">RUB</option>
+          <option value="GBP">GBP</option>
+          <option value="UAH">UAH</option>
+        </select>
+      </div>
+      <div class="conv-result" id="convResult">—</div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="portfolioModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 data-i18n="portfolio_title">Портфель</h3>
+      <button class="modal-close" data-close="portfolioModal" aria-label="Close">✕</button>
+    </div>
+    <div class="modal-body widget">
+      <div class="widget-row">
+        <select id="pfCoin" aria-label="Coin"></select>
+        <input type="number" id="pfAmount" placeholder="0.00" min="0" step="any" aria-label="Amount">
+        <button class="btn" id="pfAdd" style="padding:10px 16px;font-size:14px;" data-i18n="portfolio_add">+</button>
+      </div>
+      <div id="pfList"></div>
+      <div class="portfolio-total" id="pfTotal"></div>
+    </div>
+  </div>
+</div>
+
+<div class="settings-overlay" id="settingsOverlay"></div>
+<div class="settings-panel" id="settingsPanel">
+  <div class="settings-header">
+    <h2 data-i18n="settings_title">Настройки</h2>
+    <button class="modal-close" id="settingsClose" aria-label="Close">✕</button>
+  </div>
+  <div class="settings-body">
+
+    <div class="settings-group">
+      <label data-i18n="settings_glass">Прозрачность стекла</label>
+      <div class="slider-row">
+        <input type="range" class="ios-slider" id="glassSlider" min="0" max="100" value="72">
+        <span class="val" id="glassVal">72%</span>
+      </div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:4px;">
+        <button class="chip" data-glass-preset="solid" data-i18n="settings_solid">Плотное</button>
+        <button class="chip active" data-glass-preset="medium" data-i18n="settings_medium">Среднее</button>
+        <button class="chip" data-glass-preset="clear" data-i18n="settings_clear">Прозрачное</button>
+      </div>
+    </div>
+
+    <div class="settings-group">
+      <label data-i18n="settings_theme">Тема</label>
+      <div class="ios-toggle">
+        <span data-i18n="settings_dark">Тёмная тема</span>
+        <div class="toggle-switch" id="darkToggle"></div>
+      </div>
+    </div>
+
+    <div class="settings-group">
+      <label data-i18n="settings_site_bg">Фон сайта</label>
+      <div class="color-palette" id="siteBgPalette"></div>
+      <div class="color-picker-row">
+        <input type="color" id="siteBgPicker" value="#f2f2f7" aria-label="Site background color">
+        <span data-i18n="settings_custom_color">Свой цвет</span>
+        <span class="hex" id="siteBgHex">#f2f2f7</span>
+      </div>
+    </div>
+
+    <div class="settings-group">
+      <label data-i18n="settings_chat_bg">Фон чата</label>
+      <div class="color-palette" id="chatBgPalette"></div>
+      <div class="color-picker-row">
+        <input type="color" id="chatBgPicker" value="#f2f2f7" aria-label="Chat background color">
+        <span data-i18n="settings_custom_color">Свой цвет</span>
+        <span class="hex" id="chatBgHex">#f2f2f7</span>
+      </div>
+    </div>
+
+    <div class="settings-group">
+      <label data-i18n="settings_panel_opacity">Прозрачность настроек</label>
+      <div class="slider-row">
+        <input type="range" class="ios-slider" id="panelOpacitySlider" min="20" max="100" value="98">
+        <span class="val" id="panelOpacityVal">98%</span>
+      </div>
+    </div>
+
+    <button class="btn-reset-colors" id="resetColorsBtn" data-i18n="settings_reset_colors">↺ Сбросить цвета</button>
+
+    <div class="settings-group">
+      <label data-i18n="settings_glass_info">Информация</label>
+      <p style="font-size:12px;color:var(--ios-label-2);line-height:1.5;">
+        <span data-i18n="settings_info_text">Стиль вдохновлён iOS 27 (Liquid Glass 2.0). Прозрачность настраивается как в системе. Без «мыльных» бликов iOS 26: чёткие границы, аккуратные тени.</span>
+      </p>
+    </div>
+
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- ============ ПЕРЕВОДЫ + ЯЗЫК + ТЕМА + НАСТРОЙКИ + МОДАЛКИ ============ -->
+<script>
+  const I18N = {
+    ru: {
+      name: 'Русский', flag: '🇷🇺',
+      tab_charts: 'Графики', tab_chat: 'Чат',
+      disclaimer: '⚠️ Не является инвестиционной рекомендацией. Торговля криптовалютой связана с высоким риском. DYOR.',
+      quick_overview: 'Быстрый обзор · 5 монет', detailed_chart: 'Детальный график',
+      market_overview: '📊 Обзор рынка', calendar_title: '📅 Календарь',
+      footer: '© 2026 SignalPool · Данные предоставлены TradingView',
+      forecast_title: 'Прогноз на 15 минут', forecast_refresh: 'Обновить', forecast_share: 'Поделиться',
+      forecast_disclaimer: '⚠️ Вероятностная сводка индикаторов, не предсказание цены. DYOR.',
+      forecast_loading: 'Загрузка данных с Binance…',
+      forecast_up: 'Рост', forecast_down: 'Падение', forecast_flat: 'Боковик',
+      forecast_conf: 'Уверенность', forecast_updated: 'Обновлено',
+      forecast_error: 'Не удалось загрузить данные Binance.',
+      forecast_na: 'н/д', forecast_rsi: 'RSI', forecast_momentum: 'Моментум',
+      forecast_retry: 'Повторить', forecast_share_done: 'Карточка сохранена',
+      chart_loading: 'Загрузка графика…',
+      converter_title: 'Конвертер', converter_tooltip: 'Конвертер крипто → фиат',
+      portfolio_title: 'Портфель', portfolio_tooltip: 'Мой портфель',
+      portfolio_add: 'Добавить', portfolio_empty: 'Пока пусто — добавьте монеты', portfolio_total: 'Итого',
+      layout_title: 'Блоки:', layout_calendar: 'Календарь', layout_market: 'Обзор рынка',
+      layout_reset: 'Сбросить', layout_show_calendar: 'Показать календарь', layout_show_market: 'Показать обзор рынка',
+      layout_preset_compact: 'Компактно', layout_preset_max: 'Максимум', layout_preset_charts: 'Только графики',
+      chat_title: 'Чат трейдеров', online: 'онлайн',
+      login_title: 'Вход в чат',
+      login_desc: 'Чат доступен только авторизованным пользователям. Войдите через Google — это займёт 2 секунды.',
+      login_google: 'Войти через Google', logout: 'Выйти',
+      chat_note: 'Мнения участников — не инвестиционная рекомендация. Уважайте собеседников.',
+      placeholder: 'Ваше сообщение... (Enter — отправить, Shift+Enter — новая строка)',
+      today: 'Сегодня', yesterday: 'Вчера',
+      error_login: 'Не удалось войти. Проверьте домен в Firebase → Authentication.',
+      copied: 'Ссылка скопирована', too_fast: 'Слишком часто. Подождите пару секунд.',
+      msg_blocked_link: 'Сообщение заблокировано: подозрительная ссылка.',
+      msg_blocked_bad: 'Сообщение заблокировано: недопустимая лексика.',
+      msg_deleted: 'Сообщение удалено', you_are_banned: 'Вы заблокированы в этом чате.', admin_ban: 'Забанить',
+      theme_light: 'Светлая тема', theme_dark: 'Тёмная тема',
+      settings_title: 'Настройки', settings_glass: 'Прозрачность стекла',
+      settings_solid: 'Плотное', settings_medium: 'Среднее', settings_clear: 'Прозрачное',
+      settings_theme: 'Тема', settings_dark: 'Тёмная тема',
+      settings_site_bg: 'Фон сайта', settings_chat_bg: 'Фон чата',
+      settings_custom_color: 'Свой цвет', settings_panel_opacity: 'Прозрачность настроек',
+      settings_reset_colors: '↺ Сбросить цвета',
+      settings_glass_info: 'Информация',
+      settings_info_text: 'Стиль вдохновлён iOS 27 (Liquid Glass 2.0). Прозрачность настраивается как в системе. Без «мыльных» бликов iOS 26: чёткие границы, аккуратные тени.',
+      room_ru: '🇷🇺 Русский', room_en: '🇬🇧 English', room_es: '🇪🇸 Español',
+      room_de: '🇩🇪 Deutsch', room_fr: '🇫🇷 Français', room_tr: '🇹🇷 Türkçe',
+      room_zh: '🇨🇳 中文', room_ja: '🇯🇵 日本語', room_ko: '🇰🇷 한국어', room_pt: '🇵🇹 Português'
+    },
+    en: {
+      name: 'English', flag: '🇬🇧',
+      tab_charts: 'Charts', tab_chat: 'Chat',
+      disclaimer: '⚠️ Not investment advice. Crypto trading carries high risk. DYOR.',
+      quick_overview: 'Quick overview · 5 coins', detailed_chart: 'Detailed chart',
+      market_overview: '📊 Market overview', calendar_title: '📅 Calendar',
+      footer: '© 2026 SignalPool · Data by TradingView',
+      forecast_title: '15-min forecast', forecast_refresh: 'Refresh', forecast_share: 'Share',
+      forecast_disclaimer: '⚠️ Probabilistic summary, not a price prediction. DYOR.',
+      forecast_loading: 'Loading Binance data…',
+      forecast_up: 'Up', forecast_down: 'Down', forecast_flat: 'Sideways',
+      forecast_conf: 'Confidence', forecast_updated: 'Updated',
+      forecast_error: 'Could not load Binance data.',
+      forecast_na: 'n/a', forecast_rsi: 'RSI', forecast_momentum: 'Momentum',
+      forecast_retry: 'Retry', forecast_share_done: 'Card saved',
+      chart_loading: 'Loading chart…',
+      converter_title: 'Converter', converter_tooltip: 'Crypto → Fiat converter',
+      portfolio_title: 'Portfolio', portfolio_tooltip: 'My portfolio',
+      portfolio_add: 'Add', portfolio_empty: 'Empty — add some coins', portfolio_total: 'Total',
+      layout_title: 'Blocks:', layout_calendar: 'Calendar', layout_market: 'Market overview',
+      layout_reset: 'Reset', layout_show_calendar: 'Show calendar', layout_show_market: 'Show market overview',
+      layout_preset_compact: 'Compact', layout_preset_max: 'Max data', layout_preset_charts: 'Charts only',
+      chat_title: 'Traders Chat', online: 'online',
+      login_title: 'Sign in to chat',
+      login_desc: 'Chat is for authorized users only. Sign in with Google — takes 2 seconds.',
+      login_google: 'Sign in with Google', logout: 'Sign out',
+      chat_note: 'Opinions are not investment advice. Be respectful.',
+      placeholder: 'Your message... (Enter — send, Shift+Enter — new line)',
+      today: 'Today', yesterday: 'Yesterday',
+      error_login: 'Sign-in failed. Check domain in Firebase.',
+      copied: 'Link copied', too_fast: 'Too fast. Wait a couple of seconds.',
+      msg_blocked_link: 'Message blocked: suspicious link.',
+      msg_blocked_bad: 'Message blocked: inappropriate language.',
+      msg_deleted: 'Message deleted', you_are_banned: 'You are banned in this chat.', admin_ban: 'Ban',
+      theme_light: 'Light theme', theme_dark: 'Dark theme',
+      settings_title: 'Settings', settings_glass: 'Glass transparency',
+      settings_solid: 'Solid', settings_medium: 'Medium', settings_clear: 'Clear',
+      settings_theme: 'Theme', settings_dark: 'Dark theme',
+      settings_site_bg: 'Site background', settings_chat_bg: 'Chat background',
+      settings_custom_color: 'Custom color', settings_panel_opacity: 'Settings panel opacity',
+      settings_reset_colors: '↺ Reset colors',
+      settings_glass_info: 'Information',
+      settings_info_text: 'Inspired by iOS 27 (Liquid Glass 2.0). Transparency adjustable like in the system. No iOS 26 "soapy" highlights — crisp borders, subtle shadows.',
+      room_ru: '🇷🇺 Русский', room_en: '🇬🇧 English', room_es: '🇪🇸 Español',
+      room_de: '🇩🇪 Deutsch', room_fr: '🇫🇷 Français', room_tr: '🇹🇷 Türkçe',
+      room_zh: '🇨🇳 中文', room_ja: '🇯🇵 日本語', room_ko: '🇰🇷 한국어', room_pt: '🇵🇹 Português'
+    },
+    es: {
+      name: 'Español', flag: '🇪🇸',
+      tab_charts: 'Gráficos', tab_chat: 'Chat',
+      disclaimer: '⚠️ No es asesoramiento financiero. Operar con cripto conlleva alto riesgo. DYOR.',
+      quick_overview: 'Vista rápida · 5 monedas', detailed_chart: 'Gráfico detallado',
+      market_overview: '📊 Resumen del mercado', calendar_title: '📅 Calendario',
+      footer: '© 2026 SignalPool · Datos de TradingView',
+      forecast_title: 'Pronóstico 15 min', forecast_refresh: 'Actualizar', forecast_share: 'Compartir',
+      forecast_disclaimer: '⚠️ Resumen probabilístico, no una predicción de precio. DYOR.',
+      forecast_loading: 'Cargando datos de Binance…',
+      forecast_up: 'Subida', forecast_down: 'Caída', forecast_flat: 'Lateral',
+      forecast_conf: 'Confianza', forecast_updated: 'Actualizado',
+      forecast_error: 'No se pudieron cargar los datos de Binance.',
+      forecast_na: 'n/d', forecast_rsi: 'RSI', forecast_momentum: 'Momento',
+      forecast_retry: 'Reintentar', forecast_share_done: 'Tarjeta guardada',
+      chart_loading: 'Cargando gráfico…',
+      converter_title: 'Conversor', converter_tooltip: 'Conversor cripto → fiat',
+      portfolio_title: 'Cartera', portfolio_tooltip: 'Mi cartera',
+      portfolio_add: 'Añadir', portfolio_empty: 'Vacía — añade monedas', portfolio_total: 'Total',
+      layout_title: 'Bloques:', layout_calendar: 'Calendario', layout_market: 'Resumen del mercado',
+      layout_reset: 'Restablecer', layout_show_calendar: 'Mostrar calendario', layout_show_market: 'Mostrar resumen',
+      layout_preset_compact: 'Compacto', layout_preset_max: 'Máximo', layout_preset_charts: 'Solo gráficos',
+      chat_title: 'Chat de traders', online: 'en línea',
+      login_title: 'Entrar al chat',
+      login_desc: 'El chat es solo para usuarios autorizados. Inicia sesión con Google — 2 segundos.',
+      login_google: 'Entrar con Google', logout: 'Salir',
+      chat_note: 'Las opiniones no son asesoramiento financiero. Sé respetuoso.',
+      placeholder: 'Tu mensaje... (Enter — enviar, Shift+Enter — nueva línea)',
+      today: 'Hoy', yesterday: 'Ayer',
+      error_login: 'Error al entrar. Verifica el dominio en Firebase.',
+      copied: 'Enlace copiado', too_fast: 'Demasiado rápido.',
+      msg_blocked_link: 'Mensaje bloqueado: enlace sospechoso.',
+      msg_blocked_bad: 'Mensaje bloqueado: lenguaje inapropiado.',
+      msg_deleted: 'Mensaje eliminado', you_are_banned: 'Estás bloqueado en este chat.', admin_ban: 'Bloquear',
+      theme_light: 'Tema claro', theme_dark: 'Tema oscuro',
+      settings_title: 'Ajustes', settings_glass: 'Transparencia del vidrio',
+      settings_solid: 'Sólido', settings_medium: 'Medio', settings_clear: 'Transparente',
+      settings_theme: 'Tema', settings_dark: 'Tema oscuro',
+      settings_site_bg: 'Fondo del sitio', settings_chat_bg: 'Fondo del chat',
+      settings_custom_color: 'Color personalizado', settings_panel_opacity: 'Opacidad del panel',
+      settings_reset_colors: '↺ Restablecer colores',
+      settings_glass_info: 'Información',
+      settings_info_text: 'Inspirado en iOS 27 (Liquid Glass 2.0). Transparencia ajustable como en el sistema. Sin brillos "jabonosos" de iOS 26 — bordes nítidos, sombras sutiles.',
+      room_ru: '🇷🇺 Русский', room_en: '🇬🇧 English', room_es: '🇪🇸 Español',
+      room_de: '🇩🇪 Deutsch', room_fr: '🇫🇷 Français', room_tr: '🇹🇷 Türkçe',
+      room_zh: '🇨🇳 中文', room_ja: '🇯🇵 日本語', room_ko: '🇰🇷 한국어', room_pt: '🇵🇹 Português'
+    },
+    de: {
+      name: 'Deutsch', flag: '🇩🇪',
+      tab_charts: 'Charts', tab_chat: 'Chat',
+      disclaimer: '⚠️ Keine Anlageberatung. Krypto-Handel ist riskant. DYOR.',
+      quick_overview: 'Schnellübersicht · 5 Coins', detailed_chart: 'Detaillierter Chart',
+      market_overview: '📊 Marktübersicht', calendar_title: '📅 Kalender',
+      footer: '© 2026 SignalPool · Daten von TradingView',
+      forecast_title: '15-Min-Prognose', forecast_refresh: 'Aktualisieren', forecast_share: 'Teilen',
+      forecast_disclaimer: '⚠️ Wahrscheinlichkeitsübersicht, keine Preisprognose. DYOR.',
+      forecast_loading: 'Binance-Daten werden geladen…',
+      forecast_up: 'Steigend', forecast_down: 'Fallend', forecast_flat: 'Seitwärts',
+      forecast_conf: 'Konfidenz', forecast_updated: 'Aktualisiert',
+      forecast_error: 'Binance-Daten konnten nicht geladen werden.',
+      forecast_na: 'k.A.', forecast_rsi: 'RSI', forecast_momentum: 'Momentum',
+      forecast_retry: 'Erneut', forecast_share_done: 'Karte gespeichert',
+      chart_loading: 'Chart wird geladen…',
+      converter_title: 'Rechner', converter_tooltip: 'Krypto → Fiat Rechner',
+      portfolio_title: 'Portfolio', portfolio_tooltip: 'Mein Portfolio',
+      portfolio_add: 'Hinzufügen', portfolio_empty: 'Leer — Coins hinzufügen', portfolio_total: 'Gesamt',
+      layout_title: 'Blöcke:', layout_calendar: 'Kalender', layout_market: 'Marktübersicht',
+      layout_reset: 'Zurücksetzen', layout_show_calendar: 'Kalender anzeigen', layout_show_market: 'Marktübersicht anzeigen',
+      layout_preset_compact: 'Kompakt', layout_preset_max: 'Maximum', layout_preset_charts: 'Nur Charts',
+      chat_title: 'Trader-Chat', online: 'online',
+      login_title: 'Chat-Anmeldung',
+      login_desc: 'Chat nur für autorisierte Nutzer. Melde dich mit Google an — 2 Sekunden.',
+      login_google: 'Mit Google anmelden', logout: 'Abmelden',
+      chat_note: 'Meinungen sind keine Anlageberatung. Sei respektvoll.',
+      placeholder: 'Deine Nachricht... (Enter — senden, Shift+Enter — neue Zeile)',
+      today: 'Heute', yesterday: 'Gestern',
+      error_login: 'Anmeldung fehlgeschlagen. Domain in Firebase prüfen.',
+      copied: 'Link kopiert', too_fast: 'Zu schnell.',
+      msg_blocked_link: 'Nachricht blockiert: verdächtiger Link.',
+      msg_blocked_bad: 'Nachricht blockiert: unangemessene Sprache.',
+      msg_deleted: 'Nachricht gelöscht', you_are_banned: 'Du bist in diesem Chat gesperrt.', admin_ban: 'Sperren',
+      theme_light: 'Helles Design', theme_dark: 'Dunkles Design',
+      settings_title: 'Einstellungen', settings_glass: 'Glas-Transparenz',
+      settings_solid: 'Dicht', settings_medium: 'Mittel', settings_clear: 'Klar',
+      settings_theme: 'Design', settings_dark: 'Dunkles Design',
+      settings_site_bg: 'Seitenhintergrund', settings_chat_bg: 'Chat-Hintergrund',
+      settings_custom_color: 'Eigene Farbe', settings_panel_opacity: 'Panel-Transparenz',
+      settings_reset_colors: '↺ Farben zurücksetzen',
+      settings_glass_info: 'Information',
+      settings_info_text: 'Inspiriert von iOS 27 (Liquid Glass 2.0). Transparenz wie im System anpassbar. Keine "seifigen" Highlights wie iOS 26 — klare Ränder, dezente Schatten.',
+      room_ru: '🇷🇺 Русский', room_en: '🇬🇧 English', room_es: '🇪🇸 Español',
+      room_de: '🇩🇪 Deutsch', room_fr: '🇫🇷 Français', room_tr: '🇹🇷 Türkçe',
+      room_zh: '🇨🇳 中文', room_ja: '🇯🇵 日本語', room_ko: '🇰🇷 한국어', room_pt: '🇵🇹 Português'
+    },
+    fr: {
+      name: 'Français', flag: '🇫🇷',
+      tab_charts: 'Graphiques', tab_chat: 'Chat',
+      disclaimer: '⚠️ Pas un conseil en investissement. Le trading crypto est risqué. DYOR.',
+      quick_overview: 'Aperçu rapide · 5 cryptos', detailed_chart: 'Graphique détaillé',
+      market_overview: '📊 Aperçu du marché', calendar_title: '📅 Calendrier',
+      footer: '© 2026 SignalPool · Données par TradingView',
+      forecast_title: 'Prévision 15 min', forecast_refresh: 'Actualiser', forecast_share: 'Partager',
+      forecast_disclaimer: '⚠️ Résumé probabiliste, pas une prédiction de prix. DYOR.',
+      forecast_loading: 'Chargement des données Binance…',
+      forecast_up: 'Hausse', forecast_down: 'Baisse', forecast_flat: 'Latéral',
+      forecast_conf: 'Confiance', forecast_updated: 'Actualisé',
+      forecast_error: 'Impossible de charger les données Binance.',
+      forecast_na: 'n/d', forecast_rsi: 'RSI', forecast_momentum: 'Momentum',
+      forecast_retry: 'Réessayer', forecast_share_done: 'Carte enregistrée',
+      chart_loading: 'Chargement du graphique…',
+      converter_title: 'Convertisseur', converter_tooltip: 'Convertisseur crypto → fiat',
+      portfolio_title: 'Portefeuille', portfolio_tooltip: 'Mon portefeuille',
+      portfolio_add: 'Ajouter', portfolio_empty: 'Vide — ajoutez des cryptos', portfolio_total: 'Total',
+      layout_title: 'Blocs :', layout_calendar: 'Calendrier', layout_market: 'Aperçu du marché',
+      layout_reset: 'Réinitialiser', layout_show_calendar: 'Afficher le calendrier', layout_show_market: "Afficher l'aperçu",
+      layout_preset_compact: 'Compact', layout_preset_max: 'Max', layout_preset_charts: 'Graphiques seuls',
+      chat_title: 'Chat traders', online: 'en ligne',
+      login_title: 'Connexion au chat',
+      login_desc: 'Le chat est réservé aux utilisateurs autorisés. Connectez-vous avec Google — 2 secondes.',
+      login_google: 'Se connecter avec Google', logout: 'Déconnexion',
+      chat_note: 'Les opinions ne sont pas des conseils financiers. Soyez respectueux.',
+      placeholder: 'Votre message... (Enter — envoyer, Shift+Enter — nouvelle ligne)',
+      today: "Aujourd'hui", yesterday: 'Hier',
+      error_login: 'Échec de connexion. Vérifiez le domaine dans Firebase.',
+      copied: 'Lien copié', too_fast: 'Trop rapide.',
+      msg_blocked_link: 'Message bloqué : lien suspect.',
+      msg_blocked_bad: 'Message bloqué : langage inapproprié.',
+      msg_deleted: 'Message supprimé', you_are_banned: 'Vous êtes banni de ce chat.', admin_ban: 'Bannir',
+      theme_light: 'Thème clair', theme_dark: 'Thème sombre',
+      settings_title: 'Réglages', settings_glass: 'Transparence du verre',
+      settings_solid: 'Dense', settings_medium: 'Moyen', settings_clear: 'Clair',
+      settings_theme: 'Thème', settings_dark: 'Thème sombre',
+      settings_site_bg: 'Fond du site', settings_chat_bg: 'Fond du chat',
+      settings_custom_color: 'Couleur personnalisée', settings_panel_opacity: 'Opacité du panneau',
+      settings_reset_colors: '↺ Réinitialiser les couleurs',
+      settings_glass_info: 'Information',
+      settings_info_text: 'Inspiré par iOS 27 (Liquid Glass 2.0). Transparence réglable comme dans le système. Pas de reflets "savonneux" iOS 26 — bords nets, ombres subtiles.',
+      room_ru: '🇷🇺 Русский', room_en: '🇬🇧 English', room_es: '🇪🇸 Español',
+      room_de: '🇩🇪 Deutsch', room_fr: '🇫🇷 Français', room_tr: '🇹🇷 Türkçe',
+      room_zh: '🇨🇳 中文', room_ja: '🇯🇵 日本語', room_ko: '🇰🇷 한국어', room_pt: '🇵🇹 Português'
+    },
+    tr: {
+      name: 'Türkçe', flag: '🇹🇷',
+      tab_charts: 'Grafikler', tab_chat: 'Sohbet',
+      disclaimer: '⚠️ Yatırım tavsiyesi değildir. Kripto ticareti yüksek risk içerir. DYOR.',
+      quick_overview: 'Hızlı bakış · 5 coin', detailed_chart: 'Detaylı grafik',
+      market_overview: '📊 Piyasa özeti', calendar_title: '📅 Takvim',
+      footer: '© 2026 SignalPool · Veriler TradingView',
+      forecast_title: '15 dk tahmini', forecast_refresh: 'Yenile', forecast_share: 'Paylaş',
+      forecast_disclaimer: '⚠️ Olasılık özeti, fiyat tahmini değil. DYOR.',
+      forecast_loading: 'Binance verileri yükleniyor…',
+      forecast_up: 'Yükseliş', forecast_down: 'Düşüş', forecast_flat: 'Yatay',
+      forecast_conf: 'Güven', forecast_updated: 'Güncellendi',
+      forecast_error: 'Binance verileri yüklenemedi.',
+      forecast_na: 'yok', forecast_rsi: 'RSI', forecast_momentum: 'Momentum',
+      forecast_retry: 'Tekrar', forecast_share_done: 'Kart kaydedildi',
+      chart_loading: 'Grafik yükleniyor…',
+      converter_title: 'Dönüştürücü', converter_tooltip: 'Kripto → Fiat dönüştürücü',
+      portfolio_title: 'Portföy', portfolio_tooltip: 'Portföyüm',
+      portfolio_add: 'Ekle', portfolio_empty: 'Boş — coin ekleyin', portfolio_total: 'Toplam',
+      layout_title: 'Bloklar:', layout_calendar: 'Takvim', layout_market: 'Piyasa özeti',
+      layout_reset: 'Sıfırla', layout_show_calendar: 'Takvimi göster', layout_show_market: 'Piyasa özetini göster',
+      layout_preset_compact: 'Kompakt', layout_preset_max: 'Maksimum', layout_preset_charts: 'Sadece grafikler',
+      chat_title: 'Trader Sohbeti', online: 'çevrimiçi',
+      login_title: 'Sohbete giriş',
+      login_desc: 'Sohbet yalnızca yetkili kullanıcılar içindir. Google ile giriş — 2 saniye.',
+      login_google: 'Google ile giriş', logout: 'Çıkış',
+      chat_note: 'Görüşler yatırım tavsiyesi değildir. Saygılı olun.',
+      placeholder: 'Mesajınız... (Enter — gönder, Shift+Enter — yeni satır)',
+      today: 'Bugün', yesterday: 'Dün',
+      error_login: 'Giriş başarısız. Firebase alan adını kontrol edin.',
+      copied: 'Bağlantı kopyalandı', too_fast: 'Çok hızlı.',
+      msg_blocked_link: 'Mesaj engellendi: şüpheli bağlantı.',
+      msg_blocked_bad: 'Mesaj engellendi: uygunsuz dil.',
+      msg_deleted: 'Mesaj silindi', you_are_banned: 'Bu sohbette yasaklandınız.', admin_ban: 'Yasakla',
+      theme_light: 'Açık tema', theme_dark: 'Koyu tema',
+      settings_title: 'Ayarlar', settings_glass: 'Cam şeffaflığı',
+      settings_solid: 'Yoğun', settings_medium: 'Orta', settings_clear: 'Şeffaf',
+      settings_theme: 'Tema', settings_dark: 'Koyu tema',
+      settings_site_bg: 'Site arka planı', settings_chat_bg: 'Sohbet arka planı',
+      settings_custom_color: 'Özel renk', settings_panel_opacity: 'Panel şeffaflığı',
+      settings_reset_colors: '↺ Renkleri sıfırla',
+      settings_glass_info: 'Bilgi',
+      settings_info_text: 'iOS 27 (Liquid Glass 2.0) ilhamlı. Şeffaflık sistemdeki gibi ayarlanabilir. iOS 26 "sabunlu" parlamaları yok — net kenarlar, ince gölgeler.',
+      room_ru: '🇷🇺 Русский', room_en: '🇬🇧 English', room_es: '🇪🇸 Español',
+      room_de: '🇩🇪 Deutsch', room_fr: '🇫🇷 Français', room_tr: '🇹🇷 Türkçe',
+      room_zh: '🇨🇳 中文', room_ja: '🇯🇵 日本語', room_ko: '🇰🇷 한국어', room_pt: '🇵🇹 Português'
+    },
+    zh: {
+      name: '中文', flag: '🇨🇳',
+      tab_charts: '图表', tab_chat: '聊天',
+      disclaimer: '⚠️ 非投资建议。加密货币交易风险极高。请自行研究（DYOR）。',
+      quick_overview: '快速概览 · 5 个币种', detailed_chart: '详细图表',
+      market_overview: '📊 市场概览', calendar_title: '📅 日历',
+      footer: '© 2026 SignalPool · 数据来自 TradingView',
+      forecast_title: '15 分钟预测', forecast_refresh: '刷新', forecast_share: '分享',
+      forecast_disclaimer: '⚠️ 技术指标概率汇总，不是价格预测。DYOR。',
+      forecast_loading: '正在加载 Binance 数据…',
+      forecast_up: '上涨', forecast_down: '下跌', forecast_flat: '横盘',
+      forecast_conf: '置信度', forecast_updated: '已更新',
+      forecast_error: '无法加载 Binance 数据。',
+      forecast_na: '无数据', forecast_rsi: 'RSI', forecast_momentum: '动量',
+      forecast_retry: '重试', forecast_share_done: '卡片已保存',
+      chart_loading: '正在加载图表…',
+      converter_title: '转换器', converter_tooltip: '加密货币 → 法币转换器',
+      portfolio_title: '投资组合', portfolio_tooltip: '我的投资组合',
+      portfolio_add: '添加', portfolio_empty: '空 — 添加币种', portfolio_total: '总计',
+      layout_title: '区块：', layout_calendar: '日历', layout_market: '市场概览',
+      layout_reset: '重置', layout_show_calendar: '显示日历', layout_show_market: '显示市场概览',
+      layout_preset_compact: '紧凑', layout_preset_max: '最大', layout_preset_charts: '仅图表',
+      chat_title: '交易者聊天', online: '在线',
+      login_title: '登录聊天',
+      login_desc: '聊天仅限授权用户。使用 Google 登录，只需 2 秒。',
+      login_google: '使用 Google 登录', logout: '退出',
+      chat_note: '观点不构成投资建议。请保持尊重。',
+      placeholder: '您的消息...（Enter — 发送，Shift+Enter — 换行）',
+      today: '今天', yesterday: '昨天',
+      error_login: '登录失败。请检查 Firebase 域名设置。',
+      copied: '链接已复制', too_fast: '太快了。',
+      msg_blocked_link: '消息被拦截：可疑链接。',
+      msg_blocked_bad: '消息被拦截：不当语言。',
+      msg_deleted: '消息已删除', you_are_banned: '您已被禁言。', admin_ban: '禁言',
+      theme_light: '浅色主题', theme_dark: '深色主题',
+      settings_title: '设置', settings_glass: '玻璃透明度',
+      settings_solid: '密实', settings_medium: '中等', settings_clear: '透明',
+      settings_theme: '主题', settings_dark: '深色主题',
+      settings_site_bg: '网站背景', settings_chat_bg: '聊天背景',
+      settings_custom_color: '自定义颜色', settings_panel_opacity: '面板透明度',
+      settings_reset_colors: '↺ 重置颜色',
+      settings_glass_info: '信息',
+      settings_info_text: '灵感来自 iOS 27 (Liquid Glass 2.0)。透明度可像系统一样调整。没有 iOS 26 的「肥皂」高光 — 清晰边缘，柔和阴影。',
+      room_ru: '🇷🇺 Русский', room_en: '🇬🇧 English', room_es: '🇪🇸 Español',
+      room_de: '🇩🇪 Deutsch', room_fr: '🇫🇷 Français', room_tr: '🇹🇷 Türkçe',
+      room_zh: '🇨🇳 中文', room_ja: '🇯🇵 日本語', room_ko: '🇰🇷 한국어', room_pt: '🇵🇹 Português'
+    },
+    ja: {
+      name: '日本語', flag: '🇯🇵',
+      tab_charts: 'チャート', tab_chat: 'チャット',
+      disclaimer: '⚠️ 投資助言ではありません。暗号資産取引は高リスクです。DYOR。',
+      quick_overview: 'クイック概要 · 5 コイン', detailed_chart: '詳細チャート',
+      market_overview: '📊 市場概要', calendar_title: '📅 カレンダー',
+      footer: '© 2026 SignalPool · データ提供 TradingView',
+      forecast_title: '15分予測', forecast_refresh: '更新', forecast_share: '共有',
+      forecast_disclaimer: '⚠️ 確率的要約であり、価格予測ではありません。DYOR。',
+      forecast_loading: 'Binance データを読み込み中…',
+      forecast_up: '上昇', forecast_down: '下落', forecast_flat: '横ばい',
+      forecast_conf: '信頼度', forecast_updated: '更新済み',
+      forecast_error: 'Binance データを読み込めませんでした。',
+      forecast_na: 'データなし', forecast_rsi: 'RSI', forecast_momentum: 'モメンタム',
+      forecast_retry: '再試行', forecast_share_done: 'カードを保存しました',
+      chart_loading: 'チャートを読み込み中…',
+      converter_title: '変換', converter_tooltip: '暗号資産 → 法定通貨 変換',
+      portfolio_title: 'ポートフォリオ', portfolio_tooltip: 'マイポートフォリオ',
+      portfolio_add: '追加', portfolio_empty: '空 — コインを追加', portfolio_total: '合計',
+      layout_title: 'ブロック:', layout_calendar: 'カレンダー', layout_market: '市場概要',
+      layout_reset: 'リセット', layout_show_calendar: 'カレンダーを表示', layout_show_market: '市場概要を表示',
+      layout_preset_compact: 'コンパクト', layout_preset_max: '最大', layout_preset_charts: 'チャートのみ',
+      chat_title: 'トレーダーチャット', online: 'オンライン',
+      login_title: 'チャットにログイン',
+      login_desc: 'チャットは認証ユーザーのみ。Google でログイン（2秒）。',
+      login_google: 'Google でログイン', logout: 'ログアウト',
+      chat_note: '意見は投資助言ではありません。敬意を持って。',
+      placeholder: 'メッセージ...（Enter — 送信、Shift+Enter — 改行）',
+      today: '今日', yesterday: '昨日',
+      error_login: 'ログイン失敗。Firebase ドメインを確認してください。',
+      copied: 'リンクをコピーしました', too_fast: '速すぎます。',
+      msg_blocked_link: 'メッセージがブロックされました：不審なリンク。',
+      msg_blocked_bad: 'メッセージがブロックされました：不適切な表現。',
+      msg_deleted: 'メッセージが削除されました', you_are_banned: 'このチャットで禁止されています。', admin_ban: '禁止',
+      theme_light: 'ライトテーマ', theme_dark: 'ダークテーマ',
+      settings_title: '設定', settings_glass: 'ガラスの透明度',
+      settings_solid: '密', settings_medium: '中', settings_clear: '透明',
+      settings_theme: 'テーマ', settings_dark: 'ダークテーマ',
+      settings_site_bg: 'サイトの背景', settings_chat_bg: 'チャットの背景',
+      settings_custom_color: 'カスタムカラー', settings_panel_opacity: 'パネルの透明度',
+      settings_reset_colors: '↺ 色をリセット',
+      settings_glass_info: '情報',
+      settings_info_text: 'iOS 27（Liquid Glass 2.0）にインスパイア。透明度はシステムのように調整可能。iOS 26 の「石鹸のような」ハイライトなし — 明確な境界、控えめな影。',
+      room_ru: '🇷🇺 Русский', room_en: '🇬🇧 English', room_es: '🇪🇸 Español',
+      room_de: '🇩🇪 Deutsch', room_fr: '🇫🇷 Français', room_tr: '🇹🇷 Türkçe',
+      room_zh: '🇨🇳 中文', room_ja: '🇯🇵 日本語', room_ko: '🇰🇷 한국어', room_pt: '🇵🇹 Português'
+    },
+    ko: {
+      name: '한국어', flag: '🇰🇷',
+      tab_charts: '차트', tab_chat: '채팅',
+      disclaimer: '⚠️ 투자 조언이 아닙니다. 암호화폐 거래는 높은 위험이 있습니다. DYOR.',
+      quick_overview: '빠른 개요 · 5 코인', detailed_chart: '상세 차트',
+      market_overview: '📊 시장 개요', calendar_title: '📅 캘린더',
+      footer: '© 2026 SignalPool · 데이터 제공 TradingView',
+      forecast_title: '15분 예측', forecast_refresh: '새로고침', forecast_share: '공유',
+      forecast_disclaimer: '⚠️ 확률 요약이며 가격 예측이 아닙니다. DYOR.',
+      forecast_loading: 'Binance 데이터 로딩 중…',
+      forecast_up: '상승', forecast_down: '하락', forecast_flat: '횡보',
+      forecast_conf: '신뢰도', forecast_updated: '업데이트됨',
+      forecast_error: 'Binance 데이터를 불러올 수 없습니다.',
+      forecast_na: '데이터 없음', forecast_rsi: 'RSI', forecast_momentum: '모멘텀',
+      forecast_retry: '재시도', forecast_share_done: '카드 저장됨',
+      chart_loading: '차트 로딩 중…',
+      converter_title: '변환기', converter_tooltip: '암호화폐 → 법정화폐 변환기',
+      portfolio_title: '포트폴리오', portfolio_tooltip: '내 포트폴리오',
+      portfolio_add: '추가', portfolio_empty: '비어 있음 — 코인 추가', portfolio_total: '합계',
+      layout_title: '블록:', layout_calendar: '캘린더', layout_market: '시장 개요',
+      layout_reset: '초기화', layout_show_calendar: '캘린더 표시', layout_show_market: '시장 개요 표시',
+      layout_preset_compact: '컴팩트', layout_preset_max: '최대', layout_preset_charts: '차트만',
+      chat_title: '트레이더 채팅', online: '온라인',
+      login_title: '채팅 로그인',
+      login_desc: '채팅은 인증된 사용자만 가능합니다. Google로 로그인하세요 (2초).',
+      login_google: 'Google로 로그인', logout: '로그아웃',
+      chat_note: '의견은 투자 조언이 아닙니다. 존중해 주세요.',
+      placeholder: '메시지... (Enter — 전송, Shift+Enter — 줄바꿈)',
+      today: '오늘', yesterday: '어제',
+      error_login: '로그인 실패. Firebase 도메인을 확인하세요.',
+      copied: '링크 복사됨', too_fast: '너무 빠릅니다.',
+      msg_blocked_link: '메시지 차단됨: 의심스러운 링크.',
+      msg_blocked_bad: '메시지 차단됨: 부적절한 언어.',
+      msg_deleted: '메시지 삭제됨', you_are_banned: '이 채팅에서 차단되었습니다.', admin_ban: '차단',
+      theme_light: '라이트 테마', theme_dark: '다크 테마',
+      settings_title: '설정', settings_glass: '유리 투명도',
+      settings_solid: '밀집', settings_medium: '중간', settings_clear: '투명',
+      settings_theme: '테마', settings_dark: '다크 테마',
+      settings_site_bg: '사이트 배경', settings_chat_bg: '채팅 배경',
+      settings_custom_color: '사용자 지정 색상', settings_panel_opacity: '패널 투명도',
+      settings_reset_colors: '↺ 색상 초기화',
+      settings_glass_info: '정보',
+      settings_info_text: 'iOS 27 (Liquid Glass 2.0) 영감. 투명도를 시스템처럼 조정 가능. iOS 26의 "비누 같은" 하이라이트 없음 — 선명한 경계, 은은한 그림자.',
+      room_ru: '🇷🇺 Русский', room_en: '🇬🇧 English', room_es: '🇪🇸 Español',
+      room_de: '🇩🇪 Deutsch', room_fr: '🇫🇷 Français', room_tr: '🇹🇷 Türkçe',
+      room_zh: '🇨🇳 中文', room_ja: '🇯🇵 日本語', room_ko: '🇰🇷 한국어', room_pt: '🇵🇹 Português'
+    },
+    pt: {
+      name: 'Português', flag: '🇵🇹',
+      tab_charts: 'Gráficos', tab_chat: 'Chat',
+      disclaimer: '⚠️ Não é aconselhamento financeiro. Negociar cripto é de alto risco. DYOR.',
+      quick_overview: 'Visão rápida · 5 moedas', detailed_chart: 'Gráfico detalhado',
+      market_overview: '📊 Visão do mercado', calendar_title: '📅 Calendário',
+      footer: '© 2026 SignalPool · Dados por TradingView',
+      forecast_title: 'Previsão 15 min', forecast_refresh: 'Atualizar', forecast_share: 'Compartilhar',
+      forecast_disclaimer: '⚠️ Resumo probabilístico, não uma previsão de preço. DYOR.',
+      forecast_loading: 'Carregando dados da Binance…',
+      forecast_up: 'Alta', forecast_down: 'Queda', forecast_flat: 'Lateral',
+      forecast_conf: 'Confiança', forecast_updated: 'Atualizado',
+      forecast_error: 'Não foi possível carregar os dados da Binance.',
+      forecast_na: 'n/d', forecast_rsi: 'RSI', forecast_momentum: 'Momento',
+      forecast_retry: 'Tentar de novo', forecast_share_done: 'Cartão salvo',
+      chart_loading: 'Carregando gráfico…',
+      converter_title: 'Conversor', converter_tooltip: 'Conversor cripto → fiat',
+      portfolio_title: 'Portfólio', portfolio_tooltip: 'Meu portfólio',
+      portfolio_add: 'Adicionar', portfolio_empty: 'Vazio — adicione moedas', portfolio_total: 'Total',
+      layout_title: 'Blocos:', layout_calendar: 'Calendário', layout_market: 'Visão do mercado',
+      layout_reset: 'Redefinir', layout_show_calendar: 'Mostrar calendário', layout_show_market: 'Mostrar visão do mercado',
+      layout_preset_compact: 'Compacto', layout_preset_max: 'Máximo', layout_preset_charts: 'Apenas gráficos',
+      chat_title: 'Chat de traders', online: 'online',
+      login_title: 'Entrar no chat',
+      login_desc: 'O chat é só para usuários autorizados. Entre com Google — 2 segundos.',
+      login_google: 'Entrar com Google', logout: 'Sair',
+      chat_note: 'Opiniões não são aconselhamento financeiro. Seja respeitoso.',
+      placeholder: 'Sua mensagem... (Enter — enviar, Shift+Enter — nova linha)',
+      today: 'Hoje', yesterday: 'Ontem',
+      error_login: 'Falha ao entrar. Verifique o domínio no Firebase.',
+      copied: 'Link copiado', too_fast: 'Muito rápido.',
+      msg_blocked_link: 'Mensagem bloqueada: link suspeito.',
+      msg_blocked_bad: 'Mensagem bloqueada: linguagem inapropriada.',
+      msg_deleted: 'Mensagem excluída', you_are_banned: 'Você está banido neste chat.', admin_ban: 'Banir',
+      theme_light: 'Tema claro', theme_dark: 'Tema escuro',
+      settings_title: 'Ajustes', settings_glass: 'Transparência do vidro',
+      settings_solid: 'Denso', settings_medium: 'Médio', settings_clear: 'Transparente',
+      settings_theme: 'Tema', settings_dark: 'Tema escuro',
+      settings_site_bg: 'Fundo do site', settings_chat_bg: 'Fundo do chat',
+      settings_custom_color: 'Cor personalizada', settings_panel_opacity: 'Opacidade do painel',
+      settings_reset_colors: '↺ Redefinir cores',
+      settings_glass_info: 'Informação',
+      settings_info_text: 'Inspirado no iOS 27 (Liquid Glass 2.0). Transparência ajustável como no sistema. Sem brilhos "ensaboados" do iOS 26 — bordas nítidas, sombras sutis.',
+      room_ru: '🇷🇺 Русский', room_en: '🇬🇧 English', room_es: '🇪🇸 Español',
+      room_de: '🇩🇪 Deutsch', room_fr: '🇫🇷 Français', room_tr: '🇹🇷 Türkçe',
+      room_zh: '🇨🇳 中文', room_ja: '🇯🇵 日本語', room_ko: '🇰🇷 한국어', room_pt: '🇵🇹 Português'
+    }
+  };
+
+  const LANGS = ['ru','en','es','de','fr','tr','zh','ja','ko','pt'];
+
+  function detectLang() {
+    const urlLang = new URLSearchParams(location.search).get('lang');
+    if (urlLang && LANGS.includes(urlLang)) return urlLang;
+    const saved = localStorage.getItem('lang');
+    if (saved && LANGS.includes(saved)) return saved;
+    const browser = (navigator.language || 'en').slice(0, 2).toLowerCase();
+    return LANGS.includes(browser) ? browser : 'en';
+  }
+
+  let CURRENT_LANG = detectLang();
+
+  function t(key) {
+    return (I18N[CURRENT_LANG] && I18N[CURRENT_LANG][key]) || I18N.en[key] || key;
+  }
+  window.t = t;
+
+  function applyTranslations() {
+    document.documentElement.lang = CURRENT_LANG;
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      el.textContent = t(el.dataset.i18n);
+    });
+    const ta = document.getElementById('textInput');
+    if (ta) ta.placeholder = t('placeholder');
+    const convBtn = document.getElementById('converterBtn');
+    const pfBtn = document.getElementById('portfolioBtn');
+    const settingsBtn = document.getElementById('settingsBtn');
+    if (convBtn) convBtn.dataset.tooltip = t('converter_tooltip');
+    if (pfBtn) pfBtn.dataset.tooltip = t('portfolio_tooltip');
+    if (settingsBtn) settingsBtn.dataset.tooltip = t('settings_title');
+    if (typeof window.renderRooms === 'function') window.renderRooms();
+    document.title = t('tab_charts') + ' & ' + t('tab_chat') + ' — SignalPool';
+  }
+
+  const langSelect = document.getElementById('langSelect');
+  LANGS.forEach(code => {
+    const opt = document.createElement('option');
+    opt.value = code;
+    opt.textContent = I18N[code].flag + ' ' + I18N[code].name;
+    langSelect.appendChild(opt);
+  });
+  langSelect.value = CURRENT_LANG;
+
+  langSelect.addEventListener('change', e => {
+    CURRENT_LANG = e.target.value;
+    localStorage.setItem('lang', CURRENT_LANG);
+    const url = new URL(location.href);
+    url.searchParams.set('lang', CURRENT_LANG);
+    history.replaceState(null, '', url);
+    applyTranslations();
+    if (window.setLangRoom) window.setLangRoom(CURRENT_LANG);
+    if (window.forecastReload) window.forecastReload();
+    if (window.converterReload) window.converterReload();
+    if (window.portfolioReload) window.portfolioReload();
+    if (window.layoutReload) window.layoutReload();
+  });
+
+  applyTranslations();
+
+  function applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
+    const icon = document.getElementById('themeIcon');
+    if (icon) {
+      icon.innerHTML = theme === 'light'
+        ? '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>'
+        : '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
+    }
+    const btn = document.getElementById('themeBtn');
+    if (btn) btn.title = theme === 'light' ? t('theme_dark') : t('theme_light');
+    const dt = document.getElementById('darkToggle');
+    if (dt) dt.classList.toggle('on', theme === 'dark');
+    updateUserBackgrounds();
+  }
+
+  const DEFAULT_SITE_LIGHT = '#f2f2f7';
+  const DEFAULT_SITE_DARK = '#000000';
+  const DEFAULT_CHAT_LIGHT = '#f2f2f7';
+  const DEFAULT_CHAT_DARK = '#000000';
+
+  function getDefaultSiteBg() { return document.documentElement.getAttribute('data-theme') === 'dark' ? DEFAULT_SITE_DARK : DEFAULT_SITE_LIGHT; }
+  function getDefaultChatBg() { return document.documentElement.getAttribute('data-theme') === 'dark' ? DEFAULT_CHAT_DARK : DEFAULT_CHAT_LIGHT; }
+
+  function setUserBg(target, color) {
+    if (target === 'site') {
+      document.documentElement.style.setProperty('--user-site-bg', color);
+      document.getElementById('siteBgHex').textContent = color;
+      document.getElementById('siteBgPicker').value = color;
+      document.querySelectorAll('#siteBgPalette .color-swatch').forEach(s => s.classList.toggle('active', s.dataset.color.toLowerCase() === color.toLowerCase()));
+    } else {
+      document.documentElement.style.setProperty('--user-chat-bg', color);
+      document.getElementById('chatBgHex').textContent = color;
+      document.getElementById('chatBgPicker').value = color;
+      document.querySelectorAll('#chatBgPalette .color-swatch').forEach(s => s.classList.toggle('active', s.dataset.color.toLowerCase() === color.toLowerCase()));
+    }
+    localStorage.setItem('bg_' + target, color);
+  }
+
+  function updateUserBackgrounds() {
+    const siteBg = localStorage.getItem('bg_site') || getDefaultSiteBg();
+    const chatBg = localStorage.getItem('bg_chat') || getDefaultChatBg();
+    setUserBg('site', siteBg);
+    setUserBg('chat', chatBg);
+  }
+
+  const SITE_PRESETS = [
+    { c: '#f2f2f7', name: 'iOS Light' },
+    { c: '#000000', name: 'iOS Dark' },
+    { c: '#ffffff', name: 'White' },
+    { c: '#1c1c1e', name: 'Charcoal' },
+    { c: '#e8f0fe', name: 'Sky' },
+    { c: '#fef3e8', name: 'Peach' },
+    { c: '#e8f8ee', name: 'Mint' },
+    { c: '#f4e8fe', name: 'Lavender' },
+    { c: '#fff8e1', name: 'Cream' },
+    { c: '#0b1120', name: 'Deep Blue' }
+  ];
+
+  function buildPalette(containerId, target) {
+    const container = document.getElementById(containerId);
+    container.innerHTML = '';
+    SITE_PRESETS.forEach(preset => {
+      const b = document.createElement('button');
+      b.className = 'color-swatch';
+      b.style.background = preset.c;
+      b.dataset.color = preset.c;
+      b.title = preset.name;
+      b.addEventListener('click', () => setUserBg(target, preset.c));
+      container.appendChild(b);
+    });
+  }
+
+  buildPalette('siteBgPalette', 'site');
+  buildPalette('chatBgPalette', 'chat');
+
+  document.getElementById('siteBgPicker').addEventListener('input', e => setUserBg('site', e.target.value));
+  document.getElementById('chatBgPicker').addEventListener('input', e => setUserBg('chat', e.target.value));
+
+  document.getElementById('resetColorsBtn').addEventListener('click', () => {
+    setUserBg('site', getDefaultSiteBg());
+    setUserBg('chat', getDefaultChatBg());
+  });
+
+  function applyGlass(value) {
+    const v = Math.max(0, Math.min(100, value));
+    const opacity = 0.96 - (v / 100) * 0.51;
+    const blur = Math.round((v / 100) * 32);
+    document.documentElement.style.setProperty('--glass-opacity', opacity.toFixed(2));
+    document.documentElement.style.setProperty('--glass-blur', blur + 'px');
+    if (v < 15) document.documentElement.setAttribute('data-glass', 'solid');
+    else if (v > 85) document.documentElement.setAttribute('data-glass', 'clear');
+    else document.documentElement.setAttribute('data-glass', 'medium');
+    document.getElementById('glassVal').textContent = Math.round(v) + '%';
+    document.getElementById('glassSlider').value = v;
+    localStorage.setItem('glass', v);
+    document.querySelectorAll('[data-glass-preset]').forEach(b => {
+      const name = b.dataset.glassPreset;
+      b.classList.toggle('active',
+        (name === 'solid' && v < 15) ||
+        (name === 'medium' && v >= 15 && v <= 85) ||
+        (name === 'clear' && v > 85));
+    });
+  }
+
+  function applyPanelOpacity(value) {
+    const v = Math.max(20, Math.min(100, value));
+    document.documentElement.style.setProperty('--settings-opacity', (v / 100).toFixed(2));
+    document.getElementById('panelOpacityVal').textContent = v + '%';
+    document.getElementById('panelOpacitySlider').value = v;
+    localStorage.setItem('panel_opacity', v);
+  }
+
+  const savedTheme = localStorage.getItem('theme') ||
+    (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  applyTheme(savedTheme);
+
+  const savedGlass = parseInt(localStorage.getItem('glass') || '72', 10);
+  applyGlass(savedGlass);
+
+  const savedPanelOpacity = parseInt(localStorage.getItem('panel_opacity') || '98', 10);
+  applyPanelOpacity(savedPanelOpacity);
+
+  updateUserBackgrounds();
+
+  document.getElementById('themeBtn').addEventListener('click', () => {
+    const cur = document.documentElement.getAttribute('data-theme');
+    applyTheme(cur === 'light' ? 'dark' : 'light');
+  });
+
+  document.getElementById('darkToggle').addEventListener('click', () => {
+    const cur = document.documentElement.getAttribute('data-theme');
+    applyTheme(cur === 'light' ? 'dark' : 'light');
+  });
+
+  document.getElementById('glassSlider').addEventListener('input', e => {
+    applyGlass(parseInt(e.target.value, 10));
+  });
+
+  document.querySelectorAll('[data-glass-preset]').forEach(b => {
+    b.addEventListener('click', () => {
+      const name = b.dataset.glassPreset;
+      if (name === 'solid') applyGlass(5);
+      else if (name === 'medium') applyGlass(72);
+      else if (name === 'clear') applyGlass(95);
+    });
+  });
+
+  document.getElementById('panelOpacitySlider').addEventListener('input', e => {
+    applyPanelOpacity(parseInt(e.target.value, 10));
+  });
+
+  const settingsPanel = document.getElementById('settingsPanel');
+  const settingsOverlay = document.getElementById('settingsOverlay');
+
+  function openSettings() {
+    settingsPanel.classList.add('open');
+    settingsOverlay.classList.add('open');
+  }
+  function closeSettings() {
+    settingsPanel.classList.remove('open');
+    settingsOverlay.classList.remove('open');
+  }
+
+  document.getElementById('settingsBtn').addEventListener('click', openSettings);
+  document.getElementById('settingsClose').addEventListener('click', closeSettings);
+  settingsOverlay.addEventListener('click', closeSettings);
+
+  function openModal(id) { document.getElementById(id).classList.add('open'); }
+  function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+  document.getElementById('converterBtn').addEventListener('click', () => openModal('converterModal'));
+  document.getElementById('portfolioBtn').addEventListener('click', () => openModal('portfolioModal'));
+
+  document.querySelectorAll('[data-close]').forEach(btn => {
+    btn.addEventListener('click', () => closeModal(btn.dataset.close));
+  });
+
+  document.querySelectorAll('.modal-backdrop').forEach(m => {
+    m.addEventListener('click', e => {
+      if (e.target === m) closeModal(m.id);
+    });
+  });
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      document.querySelectorAll('.modal-backdrop.open').forEach(m => closeModal(m.id));
+      closeSettings();
+    }
+  });
+</script>
+
+<!-- ============ JS ЧАТА (С ВАШИМ КОНФИГОМ) ============ -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut }
+  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getDatabase, ref, push, onChildAdded, onValue, query, limitToLast, serverTimestamp, set, remove, onDisconnect, get }
+  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+/* ==== ВАШ КОНФИГ FIREBASE ==== */
+const firebaseConfig = {
+  apiKey: "AIzaSyCJHeHApv5kUMLLw0-OnzBuO1sNSYQD5yY",
+  authDomain: "signalpool-92598.firebaseapp.com",
+  databaseURL: "https://signalpool-92598-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "signalpool-92598",
+  storageBucket: "signalpool-92598.firebasestorage.app",
+  messagingSenderId: "562603440247",
+  appId: "1:562603440247:web:0bdc6b3b50926121bfee72"
+};
+
+const ADMIN_UIDS = ['ВСТАВЬТЕ_ВАШ_UID'];
+
+const app  = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db   = getDatabase(app);
+
+const ROOM_LANGS = ['ru','en','es','de','fr','tr','zh','ja','ko','pt'];
+
+let currentRoom = 'chat_' + (localStorage.getItem('lang') || 'ru');
+let unsubscribeMsgs = null;
+let unsubscribeOnline = null;
+let unsubscribeSitePresence = null;
+let presenceRef = null;
+let sitePresenceRef = null;
+let lastSent = 0;
+let lastRenderedDate = '';
+let unread = 0;
+
+const userBox      = document.getElementById('userBox');
+const loginOverlay = document.getElementById('loginOverlay');
+const chatArea     = document.getElementById('chatArea');
+const googleBtn    = document.getElementById('googleLoginBtn');
+const roomsEl      = document.getElementById('rooms');
+const messagesEl   = document.getElementById('messages');
+const textInput    = document.getElementById('textInput');
+const sendBtn      = document.getElementById('sendBtn');
+const form         = document.getElementById('chatForm');
+const onlineBadge  = document.getElementById('onlineBadge');
+const onlineCount  = document.getElementById('onlineCount');
+const unreadBadge  = document.getElementById('unreadBadge');
+const unreadBadgeMob = document.getElementById('unreadBadgeMob');
+const toastEl      = document.getElementById('toast');
+const scrollTopBtn = document.getElementById('scrollTop');
+const siteOnlineEl = document.getElementById('siteOnline');
+
+const BAD_WORDS = ['хуй','пизд','ебан','ебал','ебуч','бляд','мудак','мудил','сука','сучк','залуп','пидор','пидар','гандон','долбоеб','долбаеб','fuck','shit','bitch','asshole'];
+const SCAM_PATTERNS = [/t\.me\/[a-z0-9_]+/i, /wa\.me\/\d+/i, /bit\.ly\/[a-z0-9]+/i, /(free|bonus|giveaway|подарок|раздача).*(crypto|btc|eth|ton|usdt)/i, /(airdrop|scam|doubl|x2|x5|x10)/i];
+
+function checkMessage(text) {
+  const lower = text.toLowerCase();
+  for (const w of BAD_WORDS) if (lower.includes(w)) return { ok: false, reason: 'bad' };
+  for (const p of SCAM_PATTERNS) if (p.test(text)) return { ok: false, reason: 'link' };
+  return { ok: true };
+}
+
+function toast(msg, ok = false) {
+  toastEl.textContent = msg;
+  toastEl.className = 'toast show' + (ok ? ' success' : '');
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => toastEl.className = 'toast', 3500);
+}
+
+window.setLangRoom = (lang) => {
+  if (!ROOM_LANGS.includes(lang)) return;
+  switchRoom('chat_' + lang);
+};
+
+window.renderRooms = function () {
+  roomsEl.innerHTML = '';
+  ROOM_LANGS.forEach(lang => {
+    const b = document.createElement('button');
+    b.className = 'room-tab' + ('chat_' + lang === currentRoom ? ' active' : '');
+    b.textContent = window.t ? window.t('room_' + lang) : lang.toUpperCase();
+    b.dataset.room = 'chat_' + lang;
+    b.onclick = () => switchRoom('chat_' + lang);
+    roomsEl.appendChild(b);
+  });
+};
+window.renderRooms();
+
+function switchRoom(roomId) {
+  currentRoom = roomId;
+  [...roomsEl.children].forEach(b => b.classList.toggle('active', b.dataset.room === roomId));
+  if (auth.currentUser) { setupPresence(roomId); loadRoom(roomId); }
+}
+
+async function checkBan(uid) {
+  try { const snap = await get(ref(db, `bans/${uid}`)); return snap.exists(); } catch { return false; }
+}
+
+googleBtn.onclick = async () => {
+  try { await signInWithPopup(auth, new GoogleAuthProvider()); }
+  catch (e) { toast(window.t ? window.t('error_login') : 'Login failed'); console.error(e); }
+};
+
+function setupPresence(roomId) {
+  const user = auth.currentUser;
+  if (!user) return;
+  if (unsubscribeOnline) { unsubscribeOnline(); unsubscribeOnline = null; }
+  if (presenceRef) { remove(presenceRef).catch(() => {}); }
+  presenceRef = ref(db, `presence/${roomId}/${user.uid}`);
+  set(presenceRef, { name: user.displayName || 'Anon', ts: Date.now() });
+  onDisconnect(presenceRef).remove();
+  unsubscribeOnline = onValue(ref(db, `presence/${roomId}`), snap => {
+    const n = snap.exists() ? Object.keys(snap.val()).length : 0;
+    onlineCount.textContent = n;
+    onlineBadge.hidden = false;
+  });
+}
+
+function setupSitePresence() {
+  const user = auth.currentUser;
+  if (!user) return;
+  sitePresenceRef = ref(db, `sitePresence/${user.uid}`);
+  set(sitePresenceRef, { ts: Date.now() });
+  onDisconnect(sitePresenceRef).remove();
+  if (unsubscribeSitePresence) unsubscribeSitePresence();
+  unsubscribeSitePresence = onValue(ref(db, 'sitePresence'), snap => {
+    const n = snap.exists() ? Object.keys(snap.val()).length : 0;
+    if (siteOnlineEl) siteOnlineEl.textContent = n;
+  });
+}
+
+onAuthStateChanged(auth, async user => {
+  if (user) {
+    loginOverlay.classList.add('hidden');
+    chatArea.classList.remove('hidden');
+    const avatar = user.photoURL || '';
+    const name = user.displayName || user.email || 'User';
+    userBox.innerHTML = `
+      ${avatar ? `<img src="${avatar}" alt="">` : ''}
+      <span class="name">${escapeHtml(name)}</span>
+      <button class="btn logout" id="logoutBtn">${window.t ? window.t('logout') : 'Logout'}</button>
+    `;
+    document.getElementById('logoutBtn').onclick = () => {
+      if (presenceRef) remove(presenceRef).catch(() => {});
+      if (sitePresenceRef) remove(sitePresenceRef).catch(() => {});
+      signOut(auth);
+    };
+    textInput.disabled = false;
+    sendBtn.disabled = false;
+    setupPresence(currentRoom);
+    setupSitePresence();
+    loadRoom(currentRoom);
+  } else {
+    loginOverlay.classList.remove('hidden');
+    chatArea.classList.add('hidden');
+    userBox.innerHTML = '';
+    messagesEl.innerHTML = '';
+    onlineBadge.hidden = true;
+    if (unsubscribeMsgs) { unsubscribeMsgs(); unsubscribeMsgs = null; }
+    if (unsubscribeOnline) { unsubscribeOnline(); unsubscribeOnline = null; }
+    if (unsubscribeSitePresence) { unsubscribeSitePresence(); unsubscribeSitePresence = null; }
+    presenceRef = null;
+    sitePresenceRef = null;
+  }
+});
+
+function loadRoom(roomId) {
+  messagesEl.innerHTML = '';
+  lastRenderedDate = '';
+  if (unsubscribeMsgs) unsubscribeMsgs();
+  const msgsRef = query(ref(db, `messages/${roomId}`), limitToLast(100));
+  unsubscribeMsgs = onChildAdded(msgsRef, snap => {
+    const m = snap.val();
+    const id = snap.key;
+    const msgTs = m.ts || Date.now();
+    renderDateSeparator(msgTs);
+    renderMessage(m, id);
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+    const chatActive = document.getElementById('page-chat').classList.contains('active');
+    const isMine = m.uid === auth.currentUser?.uid;
+    if (!chatActive && !isMine) {
+      unread++;
+      [unreadBadge, unreadBadgeMob].forEach(b => { if (b) { b.textContent = unread > 99 ? '99+' : unread; b.classList.remove('hidden'); } });
+      document.title = `(${unread > 99 ? '99+' : unread}) ${window.t ? window.t('tab_charts') : 'Signal'} — SignalPool`;
+    }
+  });
+}
+
+function renderDateSeparator(ts) {
+  const d = new Date(ts);
+  const key = d.toDateString();
+  if (key === lastRenderedDate) return;
+  lastRenderedDate = key;
+  const sep = document.createElement('div');
+  sep.className = 'date-sep';
+  const today = new Date();
+  const yest = new Date(); yest.setDate(today.getDate() - 1);
+  if (key === today.toDateString()) sep.textContent = window.t ? window.t('today') : 'Today';
+  else if (key === yest.toDateString()) sep.textContent = window.t ? window.t('yesterday') : 'Yesterday';
+  else sep.textContent = d.toLocaleDateString(document.documentElement.lang || 'ru', { day: 'numeric', month: 'long' });
+  messagesEl.appendChild(sep);
+}
+
+function renderMessage(m, id) {
+  const div = document.createElement('div');
+  div.className = 'msg';
+  const head = document.createElement('div');
+  head.className = 'head';
+  if (m.photoURL) {
+    const img = document.createElement('img');
+    img.src = m.photoURL; img.alt = '';
+    img.onerror = () => img.remove();
+    head.appendChild(img);
+  }
+  const name = document.createElement('span');
+  name.className = 'name';
+  name.textContent = m.name || 'Anon';
+  head.appendChild(name);
+  const time = document.createElement('span');
+  time.className = 'time';
+  time.textContent = m.ts ? new Date(m.ts).toLocaleTimeString(document.documentElement.lang || 'ru', {hour:'2-digit', minute:'2-digit'}) : '';
+  head.appendChild(time);
+  const text = document.createElement('div');
+  text.className = 'text';
+  text.textContent = m.text;
+  div.append(head, text);
+  const me = auth.currentUser;
+  if (me && (ADMIN_UIDS.includes(me.uid) || m.uid === me.uid)) {
+    const btn = document.createElement('button');
+    btn.className = 'delete-btn';
+    btn.textContent = '✕';
+    btn.onclick = async () => {
+      if (!confirm((window.t ? window.t('msg_deleted') : 'Delete') + '?')) return;
+      await remove(ref(db, `messages/${currentRoom}/${id}`));
+    };
+    div.appendChild(btn);
+  }
+  if (me && ADMIN_UIDS.includes(me.uid) && m.uid && m.uid !== me.uid) {
+    const banBtn = document.createElement('button');
+    banBtn.className = 'delete-btn';
+    banBtn.textContent = '🚫';
+    banBtn.style.right = '28px';
+    banBtn.onclick = async () => {
+      if (!confirm((window.t ? window.t('admin_ban') : 'Ban') + ' ' + (m.name || m.uid) + '?')) return;
+      await set(ref(db, `bans/${m.uid}`), { ts: Date.now(), by: me.uid });
+    };
+    div.appendChild(banBtn);
+  }
+  messagesEl.appendChild(div);
+}
+
+async function sendMessage() {
+  const user = auth.currentUser;
+  if (!user) return;
+  const banned = await checkBan(user.uid);
+  if (banned) { toast(window.t ? window.t('you_are_banned') : 'You are banned'); return; }
+  const text = textInput.value.trim();
+  if (!text) return;
+  const check = checkMessage(text);
+  if (!check.ok) { toast(window.t ? (check.reason === 'link' ? window.t('msg_blocked_link') : window.t('msg_blocked_bad')) : 'Blocked'); return; }
+  const now = Date.now();
+  if (now - lastSent < 2000) { toast(window.t ? window.t('too_fast') : 'Too fast'); return; }
+  lastSent = now;
+  textInput.value = '';
+  autoResize();
+  await push(ref(db, `messages/${currentRoom}`), {
+    text, uid: user.uid, name: user.displayName || 'Anon', photoURL: user.photoURL || '', ts: serverTimestamp()
+  });
+}
+
+form.addEventListener('submit', e => { e.preventDefault(); sendMessage(); });
+textInput.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } });
+function autoResize() { textInput.style.height = 'auto'; textInput.style.height = Math.min(textInput.scrollHeight, 100) + 'px'; }
+textInput.addEventListener('input', autoResize);
+
+function escapeHtml(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+
+messagesEl.addEventListener('scroll', () => { scrollTopBtn.classList.toggle('show', messagesEl.scrollTop > 300); });
+scrollTopBtn.addEventListener('click', () => { messagesEl.scrollTo({ top: 0, behavior: 'smooth' }); });
+</script>
+
+<!-- ============ ВКЛАДКИ + ГРАФИКИ + ПРОГНОЗ + РАСКЛАДКА + ВИДЖЕТЫ ============ -->
+<script>
+  const tabs = document.querySelectorAll('.tab');
+  const mobBtns = document.querySelectorAll('.mobile-nav button');
+  const pages = { charts: document.getElementById('page-charts'), chat: document.getElementById('page-chat') };
+  const unreadBadgeEl = document.getElementById('unreadBadge');
+  const unreadBadgeMobEl = document.getElementById('unreadBadgeMob');
+
+  function activateTab(pageName) {
+    tabs.forEach(x => x.classList.toggle('active', x.dataset.page === pageName));
+    mobBtns.forEach(x => x.classList.toggle('active', x.dataset.page === pageName));
+    Object.entries(pages).forEach(([k, p]) => p.classList.toggle('active', k === pageName));
+    localStorage.setItem('activePage', pageName);
+    history.replaceState(null, '', (pageName === 'chat' ? '#chat' : location.pathname) + location.search);
+    if (pageName === 'chat') {
+      const msgs = document.getElementById('messages');
+      if (msgs) msgs.scrollTop = msgs.scrollHeight;
+      [unreadBadgeEl, unreadBadgeMobEl].forEach(b => { if (b) { b.classList.add('hidden'); b.textContent = '0'; } });
+      document.title = (window.t ? window.t('tab_charts') : 'Signal') + ' & ' + (window.t ? window.t('tab_chat') : 'Chat') + ' — SignalPool';
+    }
+  }
+
+  tabs.forEach(t => t.addEventListener('click', () => activateTab(t.dataset.page)));
+  mobBtns.forEach(b => b.addEventListener('click', () => activateTab(b.dataset.page)));
+
+  if (location.hash === '#chat' || localStorage.getItem('activePage') === 'chat') activateTab('chat');
+  else activateTab('charts');
+
+  window.addEventListener('hashchange', () => { activateTab(location.hash === '#chat' ? 'chat' : 'charts'); });
+
+  document.getElementById('shareBtn').addEventListener('click', async () => {
+    const url = location.origin + location.pathname + (location.search || '');
+    try {
+      if (navigator.share) await navigator.share({ title: 'SignalPool', url });
+      else { await navigator.clipboard.writeText(url); showToast(window.t ? window.t('copied') : 'Link copied', true); }
+    } catch {}
+  });
+
+  function showToast(msg, ok = false) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'toast show' + (ok ? ' success' : '');
+    clearTimeout(showToast._t);
+    showToast._t = setTimeout(() => t.className = 'toast', 3500);
+  }
+
+  const MINI_COINS = [
+    { symbol: 'BINANCE:BTCUSDT', id: 'BTC' }, { symbol: 'BINANCE:ETHUSDT', id: 'ETH' },
+    { symbol: 'BINANCE:SOLUSDT', id: 'SOL' }, { symbol: 'BINANCE:BNBUSDT', id: 'BNB' },
+    { symbol: 'BINANCE:XRPUSDT', id: 'XRP' }
+  ];
+  const miniGrid = document.getElementById('miniGrid');
+  MINI_COINS.forEach(c => {
+    const wrap = document.createElement('div');
+    wrap.className = 'mini-chart';
+    wrap.dataset.coin = c.id;
+    wrap.title = c.id;
+    const iframe = document.createElement('iframe');
+    iframe.src = 'https://s.tradingview.com/widgetembed/?' + new URLSearchParams({
+      symbol: c.symbol, interval: '60', theme: 'light', style: '1',
+      locale: (localStorage.getItem('lang') || 'ru'),
+      hide_side_toolbar: '1', hide_top_toolbar: '1', hide_legend: '0',
+      withdateranges: '0', allow_symbol_change: '0', save_image: '0',
+      details: '0', hotlist: '0', calendar: '0'
+    }).toString();
+    iframe.loading = 'lazy';
+    iframe.title = c.symbol;
+    iframe.addEventListener('load', () => wrap.classList.add('loaded'));
+    wrap.appendChild(iframe);
+    wrap.addEventListener('click', () => { selectCoin(c.id); document.querySelector('.chart-container').scrollIntoView({ behavior: 'smooth', block: 'center' }); });
+    miniGrid.appendChild(wrap);
+    setTimeout(() => wrap.classList.add('loaded'), 3000);
+  });
+
+  const COINS = [
+    { id: 'BTC', symbol: 'BINANCE:BTCUSDT' }, { id: 'ETH', symbol: 'BINANCE:ETHUSDT' },
+    { id: 'SOL', symbol: 'BINANCE:SOLUSDT' }, { id: 'BNB', symbol: 'BINANCE:BNBUSDT' },
+    { id: 'XRP', symbol: 'BINANCE:XRPUSDT' }, { id: 'ADA', symbol: 'BINANCE:ADAUSDT' },
+    { id: 'DOGE', symbol: 'BINANCE:DOGEUSDT' }, { id: 'AVAX', symbol: 'BINANCE:AVAXUSDT' },
+    { id: 'LINK', symbol: 'BINANCE:LINKUSDT' }, { id: 'TON', symbol: 'BINANCE:TONUSDT' }
+  ];
+  const TIMEFRAMES = [
+    { value: '1', label: '1m' }, { value: '5', label: '5m' }, { value: '15', label: '15m' },
+    { value: '60', label: '1h' }, { value: '240', label: '4h' }, { value: 'D', label: '1D' }, { value: 'W', label: '1W' }
+  ];
+
+  let currentCoin = localStorage.getItem('chartCoin') || 'BTC';
+  let currentTf = localStorage.getItem('chartTf') || '60';
+  if (!COINS.find(c => c.id === currentCoin)) currentCoin = 'BTC';
+  if (!TIMEFRAMES.find(t => t.value === currentTf)) currentTf = '60';
+
+  const coinButtonsEl = document.getElementById('coinButtons');
+  const tfButtonsEl = document.getElementById('tfButtons');
+  const iframe = document.getElementById('tvFrame');
+  const chartContainer = document.getElementById('chartContainer');
+
+  COINS.forEach(c => {
+    const b = document.createElement('button');
+    b.className = 'chip' + (c.id === currentCoin ? ' active' : '');
+    b.textContent = c.id;
+    b.onclick = () => selectCoin(c.id);
+    coinButtonsEl.appendChild(b);
+  });
+
+  TIMEFRAMES.forEach(t => {
+    const b = document.createElement('button');
+    b.className = 'chip' + (t.value === currentTf ? ' active' : '');
+    b.textContent = t.label;
+    b.onclick = () => { currentTf = t.value; localStorage.setItem('chartTf', currentTf); renderChart(); updateActive(); };
+    tfButtonsEl.appendChild(b);
+  });
+
+  function selectCoin(id) { currentCoin = id; localStorage.setItem('chartCoin', currentCoin); renderChart(); updateActive(); }
+  function updateActive() {
+    [...coinButtonsEl.children].forEach((b, i) => b.classList.toggle('active', COINS[i].id === currentCoin));
+    [...tfButtonsEl.children].forEach((b, i) => b.classList.toggle('active', TIMEFRAMES[i].value === currentTf));
+  }
+  function renderChart() {
+    chartContainer.classList.remove('loaded');
+    const coin = COINS.find(c => c.id === currentCoin);
+    const params = new URLSearchParams({
+      symbol: coin.symbol, interval: currentTf, theme: 'light', style: '1',
+      locale: (localStorage.getItem('lang') || 'ru'),
+      hide_side_toolbar: '0', withdateranges: '1', allow_symbol_change: '1',
+      save_image: '1', details: '1', hotlist: '1', calendar: '0'
+    });
+    iframe.src = 'https://s.tradingview.com/widgetembed/?' + params.toString();
+  }
+  iframe.addEventListener('load', () => chartContainer.classList.add('loaded'));
+  setTimeout(() => chartContainer.classList.add('loaded'), 3500);
+  renderChart();
+
+  /* ПРОГНОЗ */
+  (function () {
+    const FORECAST_COINS = [
+      { id: 'BTC', symbol: 'BTCUSDT' }, { id: 'ETH', symbol: 'ETHUSDT' },
+      { id: 'SOL', symbol: 'SOLUSDT' }, { id: 'BNB', symbol: 'BNBUSDT' },
+      { id: 'XRP', symbol: 'XRPUSDT' }, { id: 'ADA', symbol: 'ADAUSDT' },
+      { id: 'DOGE', symbol: 'DOGEUSDT' }, { id: 'AVAX', symbol: 'AVAXUSDT' },
+      { id: 'LINK', symbol: 'LINKUSDT' }, { id: 'TON', symbol: 'TONUSDT' }
+    ];
+    const BINANCE_HOSTS = ['https://api.binance.com', 'https://api1.binance.com', 'https://data-api.binance.vision'];
+    const gridEl = document.getElementById('forecastGrid');
+    const updatedEl = document.getElementById('forecastUpdated');
+    const refreshBtn = document.getElementById('forecastRefresh');
+    const shareBtn = document.getElementById('shareForecast');
+    let lastForecastLoad = 0;
+    let lastDataCache = null;
+
+    function T(key, fallback) { return (window.t ? window.t(key) : null) || fallback; }
+    function fmtPrice(p) {
+      if (p >= 1000) return '$' + p.toLocaleString('en-US', { maximumFractionDigits: 0 });
+      if (p >= 1) return '$' + p.toLocaleString('en-US', { maximumFractionDigits: 2 });
+      return '$' + p.toLocaleString('en-US', { maximumFractionDigits: 5 });
+    }
+    function calcRSI(closes, period = 14) {
+      if (closes.length < period + 1) return 50;
+      let gains = 0, losses = 0;
+      for (let i = closes.length - period; i < closes.length; i++) {
+        const diff = closes[i] - closes[i - 1];
+        if (diff >= 0) gains += diff; else losses -= diff;
+      }
+      const avgGain = gains / period;
+      const avgLoss = losses / period;
+      if (avgLoss === 0) return 100;
+      return 100 - 100 / (1 + avgGain / avgLoss);
+    }
+    function calcEMA(values, period) {
+      const k = 2 / (period + 1);
+      let ema = values[0];
+      for (let i = 1; i < values.length; i++) ema = values[i] * k + ema * (1 - k);
+      return ema;
+    }
+    function analyze(klines) {
+      const closes = klines.map(k => parseFloat(k[4]));
+      const volumes = klines.map(k => parseFloat(k[5]));
+      const last = closes[closes.length - 1];
+      const prev15 = closes[closes.length - 2];
+      const rsi = calcRSI(closes, 14);
+      const ema9 = calcEMA(closes.slice(-50), 9);
+      const ema21 = calcEMA(closes.slice(-50), 21);
+      const momentum = ((last - prev15) / prev15) * 100;
+      const avgVol = volumes.slice(-21, -1).reduce((a, b) => a + b, 0) / 20;
+      const volRatio = volumes[volumes.length - 1] / (avgVol || 1);
+      let score = 0;
+      if (rsi < 30) score += 2; else if (rsi > 70) score -= 2;
+      else if (rsi < 45) score += 0.5; else if (rsi > 55) score -= 0.5;
+      if (ema9 > ema21) score += 1.5; else score -= 1.5;
+      if (momentum > 0.3) score += 1.5; else if (momentum < -0.3) score -= 1.5;
+      if (volRatio > 1.5) { const dir = momentum >= 0 ? 1 : -1; score += dir * 1; }
+      const maxScore = 6;
+      const norm = Math.max(-1, Math.min(1, score / maxScore));
+      let dir;
+      if (norm > 0.15) dir = 'up'; else if (norm < -0.15) dir = 'down'; else dir = 'flat';
+      return { last, momentum, rsi, dir, confidence: Math.round(Math.abs(norm) * 100) };
+    }
+    function renderCard(coin, data) {
+      const card = document.createElement('div');
+      card.className = 'forecast-card';
+      const dirLabel = data.dir === 'up' ? T('forecast_up', 'Рост') : data.dir === 'down' ? T('forecast_down', 'Падение') : T('forecast_flat', 'Боковик');
+      const arrow = data.dir === 'up' ? '▲' : data.dir === 'down' ? '▼' : '▶';
+      const priceClass = data.momentum > 0 ? 'up' : data.momentum < 0 ? 'down' : '';
+      const barWidth = (data.confidence / 2) + '%';
+      const fillStyle = data.dir === 'down' ? `width:${barWidth};left:auto;right:50%` : `width:${barWidth};left:50%`;
+      card.innerHTML = `
+        <div class="fc-top"><span class="fc-symbol">${coin.id}</span><span class="fc-price ${priceClass}">${fmtPrice(data.last)}</span></div>
+        <div class="fc-arrow ${data.dir}">${arrow}</div>
+        <div class="fc-dir ${data.dir}">${dirLabel}</div>
+        <div class="fc-bar"><div class="fill ${data.dir === 'down' ? 'down' : 'up'}" style="${fillStyle}"></div></div>
+        <div class="fc-confidence">${T('forecast_conf', 'Уверенность')}: ${data.confidence}%</div>
+        <div class="fc-meta"><span>RSI ${data.rsi.toFixed(0)}</span><span>${data.momentum >= 0 ? '+' : ''}${data.momentum.toFixed(2)}%</span></div>
+      `;
+      return card;
+    }
+    function renderNaCard(coin) {
+      const card = document.createElement('div');
+      card.className = 'forecast-card';
+      card.innerHTML = `<div class="fc-top"><span class="fc-symbol">${coin.id}</span></div><div class="fc-loading" style="padding:8px 0;font-size:11px;">${T('forecast_na', 'n/a')}</div>`;
+      return card;
+    }
+    function renderAll(results) {
+      gridEl.innerHTML = '';
+      let ok = 0;
+      results.forEach(({ coin, klines }) => {
+        if (!klines || klines.length < 30) { gridEl.appendChild(renderNaCard(coin)); return; }
+        gridEl.appendChild(renderCard(coin, analyze(klines)));
+        ok++;
+      });
+      return ok;
+    }
+    async function fetchOne(coin) {
+      let lastErr;
+      for (const host of BINANCE_HOSTS) {
+        try {
+          const url = `${host}/api/v3/klines?symbol=${coin.symbol}&interval=15m&limit=100`;
+          const res = await fetch(url, { cache: 'no-store' });
+          if (!res.ok) throw new Error('HTTP ' + res.status);
+          return await res.json();
+        } catch (e) { lastErr = e; }
+      }
+      throw lastErr || new Error('All hosts failed');
+    }
+    let loadAll = async function () {
+      gridEl.innerHTML = `<div class="fc-loading" style="grid-column:1/-1;">${T('forecast_loading', 'Загрузка…')}</div>`;
+      updatedEl.textContent = '';
+      try {
+        const results = await Promise.all(FORECAST_COINS.map(c => fetchOne(c).then(k => ({ coin: c, klines: k })).catch(() => ({ coin: c, klines: null }))));
+        lastDataCache = results;
+        const ok = renderAll(results);
+        if (ok === 0) {
+          gridEl.innerHTML = `<div class="fc-loading" style="grid-column:1/-1;">${T('forecast_error', 'Ошибка')}<br><button class="btn-refresh" style="margin-top:8px;" onclick="window.forecastForceReload()">${T('forecast_retry', 'Повторить')}</button></div>`;
+        } else {
+          updatedEl.textContent = T('forecast_updated', 'Обновлено') + ': ' + new Date().toLocaleTimeString(document.documentElement.lang || 'ru', { hour: '2-digit', minute: '2-digit' });
+        }
+        lastForecastLoad = Date.now();
+      } catch (e) {
+        gridEl.innerHTML = `<div class="fc-loading" style="grid-column:1/-1;">${T('forecast_error', 'Ошибка')}<br><button class="btn-refresh" style="margin-top:8px;" onclick="window.forecastForceReload()">${T('forecast_retry', 'Повторить')}</button></div>`;
+      }
+    };
+    window.forecastReload = function () {
+      if (!lastDataCache) { loadAll(); return; }
+      renderAll(lastDataCache);
+      if (lastForecastLoad) updatedEl.textContent = T('forecast_updated', 'Обновлено') + ': ' + new Date(lastForecastLoad).toLocaleTimeString(document.documentElement.lang || 'ru', { hour: '2-digit', minute: '2-digit' });
+    };
+    window.forecastForceReload = loadAll;
+    refreshBtn.addEventListener('click', loadAll);
+
+    shareBtn.addEventListener('click', async () => {
+      if (!lastDataCache) return;
+      const cards = lastDataCache.slice(0, 5).filter(r => r.klines && r.klines.length >= 30);
+      if (!cards.length) return;
+      const W = 800, H = 80 + cards.length * 100 + 40;
+      const canvas = document.createElement('canvas');
+      canvas.width = W; canvas.height = H;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#f2f2f7'; ctx.fillRect(0, 0, W, H);
+      ctx.fillStyle = '#007aff'; ctx.font = 'bold 24px Arial';
+      ctx.fillText('SignalPool · 15-min forecast', 30, 40);
+      ctx.fillStyle = '#8e8e93'; ctx.font = '14px Arial';
+      ctx.fillText(new Date().toLocaleString(), 30, 65);
+      let y = 90;
+      cards.forEach(({ coin, klines }) => {
+        const d = analyze(klines);
+        const color = d.dir === 'up' ? '#34c759' : d.dir === 'down' ? '#ff3b30' : '#8e8e93';
+        const arrow = d.dir === 'up' ? '▲' : d.dir === 'down' ? '▼' : '▶';
+        const label = d.dir === 'up' ? 'UP' : d.dir === 'down' ? 'DOWN' : 'FLAT';
+        ctx.fillStyle = '#ffffff'; ctx.fillRect(20, y - 10, W - 40, 85);
+        ctx.fillStyle = '#007aff'; ctx.font = 'bold 20px Arial'; ctx.fillText(coin.id, 40, y + 20);
+        ctx.fillStyle = '#000'; ctx.font = '16px Arial'; ctx.fillText(fmtPrice(d.last), 140, y + 20);
+        ctx.fillStyle = color; ctx.font = 'bold 18px Arial'; ctx.fillText(`${arrow} ${label}`, W - 180, y + 20);
+        ctx.fillStyle = '#8e8e93'; ctx.font = '12px Arial';
+        ctx.fillText(`Confidence: ${d.confidence}%  ·  RSI: ${d.rsi.toFixed(0)}  ·  Momentum: ${d.momentum.toFixed(2)}%`, 40, y + 48);
+        y += 100;
+      });
+      ctx.fillStyle = '#8e8e93'; ctx.font = '11px Arial'; ctx.fillText('Not investment advice. DYOR.', 30, H - 15);
+      canvas.toBlob(blob => {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url; a.download = `signalpool-forecast-${Date.now()}.png`; a.click();
+        URL.revokeObjectURL(url);
+        showToast(T('forecast_share_done', 'Сохранено'), true);
+      });
+    });
+
+    function scheduleAutoRefresh() {
+      const now = new Date();
+      const next15 = (15 - (now.getMinutes() % 15)) * 60 * 1000 - now.getSeconds() * 1000 + 5000;
+      setTimeout(() => { loadAll(); setInterval(loadAll, 15 * 60 * 1000); }, next15);
+    }
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden && Date.now() - lastForecastLoad > 15 * 60 * 1000) loadAll();
+    });
+    loadAll();
+    scheduleAutoRefresh();
+  })();
+
+  /* КОНВЕРТЕР + ПОРТФЕЛЬ */
+  (function () {
+    const CONV_COINS = ['BTC','ETH','SOL','BNB','XRP','ADA','DOGE','AVAX','LINK','TON'];
+    const FIAT_SYMBOL = { USDT: '$', EUR: '€', RUB: '₽', GBP: '£', UAH: '₴' };
+    const convCoin = document.getElementById('convCoin');
+    const convFiat = document.getElementById('convFiat');
+    const convAmount = document.getElementById('convAmount');
+    const convResult = document.getElementById('convResult');
+    const pfCoin = document.getElementById('pfCoin');
+    const pfAmount = document.getElementById('pfAmount');
+    const pfAdd = document.getElementById('pfAdd');
+    const pfList = document.getElementById('pfList');
+    const pfTotal = document.getElementById('pfTotal');
+    let prices = {}, pricesTs = 0;
+    CONV_COINS.forEach(id => { [convCoin, pfCoin].forEach(sel => { const o = document.createElement('option'); o.value = id; o.textContent = id; sel.appendChild(o); }); });
+    async function loadPrices() {
+      if (Date.now() - pricesTs < 60000 && Object.keys(prices).length) return prices;
+      const hosts = ['https://api.binance.com', 'https://api1.binance.com', 'https://data-api.binance.vision'];
+      for (const host of hosts) {
+        try {
+          const symbols = CONV_COINS.map(c => `"${c}USDT"`).join(',');
+          const res = await fetch(`${host}/api/v3/ticker/price?symbols=[${symbols}]`, { cache: 'no-store' });
+          if (!res.ok) throw new Error('HTTP');
+          const data = await res.json();
+          data.forEach(d => { const coin = d.symbol.replace('USDT',''); prices[coin] = parseFloat(d.price); });
+          pricesTs = Date.now(); return prices;
+        } catch {}
+      }
+      return prices;
+    }
+    async function updateConverter() {
+      await loadPrices();
+      const amount = parseFloat(convAmount.value) || 0;
+      const coin = convCoin.value;
+      const fiat = convFiat.value;
+      const usdPrice = prices[coin];
+      if (!usdPrice) { convResult.textContent = '—'; return; }
+      let value = amount * usdPrice;
+      if (fiat !== 'USDT') { const fx = { EUR: 0.92, RUB: 92, GBP: 0.79, UAH: 41 }; value *= fx[fiat] || 1; }
+      convResult.innerHTML = `${value.toLocaleString('en-US', { maximumFractionDigits: 2 })} ${FIAT_SYMBOL[fiat] || '$'}<small>1 ${coin} = ${usdPrice.toLocaleString('en-US', { maximumFractionDigits: 2 })} USD</small>`;
+    }
+    convAmount.addEventListener('input', updateConverter);
+    convCoin.addEventListener('change', updateConverter);
+    convFiat.addEventListener('change', updateConverter);
+    window.converterReload = updateConverter;
+    function getPortfolio() { try { return JSON.parse(localStorage.getItem('portfolio') || '{}'); } catch { return {}; } }
+    function savePortfolio(p) { localStorage.setItem('portfolio', JSON.stringify(p)); }
+    async function renderPortfolio() {
+      await loadPrices();
+      const p = getPortfolio();
+      pfList.innerHTML = '';
+      let total = 0;
+      const keys = Object.keys(p);
+      if (!keys.length) { pfList.innerHTML = `<div style="color:var(--ios-label-2);font-size:13px;padding:8px 0;">${window.t ? window.t('portfolio_empty') : 'Empty'}</div>`; pfTotal.textContent = ''; return; }
+      keys.forEach(coin => {
+        const amount = p[coin], price = prices[coin] || 0, value = amount * price; total += value;
+        const item = document.createElement('div'); item.className = 'portfolio-item';
+        item.innerHTML = `<span><b style="color:var(--ios-blue);">${coin}</b> · ${amount}</span><span style="display:flex;gap:6px;align-items:center;"><span>$${value.toLocaleString('en-US', { maximumFractionDigits: 2 })}</span><button class="remove-btn" data-coin="${coin}">✕</button></span>`;
+        pfList.appendChild(item);
+      });
+      pfTotal.textContent = (window.t ? window.t('portfolio_total') : 'Total') + ': $' + total.toLocaleString('en-US', { maximumFractionDigits: 2 });
+      pfList.querySelectorAll('.remove-btn').forEach(btn => {
+        btn.addEventListener('click', () => { const coin = btn.dataset.coin; const p = getPortfolio(); delete p[coin]; savePortfolio(p); renderPortfolio(); });
+      });
+    }
+    pfAdd.addEventListener('click', () => {
+      const coin = pfCoin.value, amount = parseFloat(pfAmount.value);
+      if (!amount || amount <= 0) return;
+      const p = getPortfolio(); p[coin] = (p[coin] || 0) + amount; savePortfolio(p); pfAmount.value = ''; renderPortfolio();
+    });
+    window.portfolioReload = renderPortfolio;
+    updateConverter();
+    renderPortfolio();
+  })();
+
+  /* РАСКЛАДКА */
+  (function () {
+    const STORAGE = { calHeight: 'layout_cal_h', marketHeight: 'layout_market_h', calHidden: 'layout_cal_hidden', marketHidden: 'layout_market_hidden', order: 'layout_order', preset: 'layout_preset' };
+    const blockCalendar = document.getElementById('blockCalendar');
+    const blockMarket = document.getElementById('blockMarket');
+    const blocksRow = document.getElementById('blocksRow');
+    const calBody = document.getElementById('calBody');
+    const marketBody = document.getElementById('marketBody');
+    const calRange = document.getElementById('calRange');
+    const marketRange = document.getElementById('marketRange');
+    const calVal = document.getElementById('calVal');
+    const marketVal = document.getElementById('marketVal');
+    const calHide = document.getElementById('calHide');
+    const marketHide = document.getElementById('marketHide');
+    const toggleCalBtn = document.getElementById('toggleCalendarBtn');
+    const toggleMktBtn = document.getElementById('toggleMarketBtn');
+    const resetBtn = document.getElementById('resetLayoutBtn');
+    const hiddenBar = document.getElementById('hiddenBar');
+    const presetBtns = document.querySelectorAll('.preset');
+
+    function T(key, fallback) { return (window.t ? window.t(key) : null) || fallback; }
+    function getNum(key, def) { const v = parseInt(localStorage.getItem(key), 10); return isNaN(v) ? def : v; }
+    function getBool(key) { return localStorage.getItem(key) === '1'; }
+    function setNum(key, v) { localStorage.setItem(key, String(v)); }
+    function setBool(key, v) { localStorage.setItem(key, v ? '1' : '0'); }
+
+    let calHeight = getNum(STORAGE.calHeight, 450);
+    let marketHeight = getNum(STORAGE.marketHeight, 520);
+    let calHidden = getBool(STORAGE.calHidden);
+    let marketHidden = getBool(STORAGE.marketHidden);
+
+    calBody.style.height = calHeight + 'px';
+    marketBody.style.height = marketHeight + 'px';
+    calRange.value = calHeight; marketRange.value = marketHeight;
+    calVal.textContent = calHeight + 'px'; marketVal.textContent = marketHeight + 'px';
+
+    let order = (localStorage.getItem(STORAGE.order) || 'calendar,market').split(',');
+    if (order.length !== 2 || !order.includes('calendar') || !order.includes('market')) order = ['calendar', 'market'];
+    function applyOrder() { order.forEach(id => { blocksRow.appendChild(id === 'calendar' ? blockCalendar : blockMarket); }); }
+    applyOrder();
+
+    function applyVisibility() {
+      blockCalendar.classList.toggle('hidden-block', calHidden);
+      blockMarket.classList.toggle('hidden-block', marketHidden);
+      toggleCalBtn.classList.toggle('active', !calHidden);
+      toggleMktBtn.classList.toggle('active', !marketHidden);
+      toggleCalBtn.textContent = calHidden ? '👁️ ' + T('layout_show_calendar', 'Показать') : T('layout_calendar', '📅 Календарь');
+      toggleMktBtn.textContent = marketHidden ? '👁️ ' + T('layout_show_market', 'Показать') : T('layout_market', '📊 Обзор');
+      hiddenBar.innerHTML = '';
+      if (calHidden) { const b = document.createElement('button'); b.textContent = '👁️ ' + T('layout_show_calendar', 'Показать календарь'); b.onclick = () => setHidden('calendar', false); hiddenBar.appendChild(b); }
+      if (marketHidden) { const b = document.createElement('button'); b.textContent = '👁️ ' + T('layout_show_market', 'Показать обзор'); b.onclick = () => setHidden('market', false); hiddenBar.appendChild(b); }
+    }
+    function setHidden(which, value) {
+      if (which === 'calendar') { calHidden = value; setBool(STORAGE.calHidden, value); }
+      else { marketHidden = value; setBool(STORAGE.marketHidden, value); }
+      applyVisibility();
+    }
+    calRange.addEventListener('input', () => { calHeight = parseInt(calRange.value, 10); calBody.style.height = calHeight + 'px'; calVal.textContent = calHeight + 'px'; setNum(STORAGE.calHeight, calHeight); localStorage.removeItem(STORAGE.preset); updatePresetActive(); });
+    marketRange.addEventListener('input', () => { marketHeight = parseInt(marketRange.value, 10); marketBody.style.height = marketHeight + 'px'; marketVal.textContent = marketHeight + 'px'; setNum(STORAGE.marketHeight, marketHeight); localStorage.removeItem(STORAGE.preset); updatePresetActive(); });
+    calHide.addEventListener('click', () => setHidden('calendar', true));
+    marketHide.addEventListener('click', () => setHidden('market', true));
+    toggleCalBtn.addEventListener('click', () => setHidden('calendar', !calHidden));
+    toggleMktBtn.addEventListener('click', () => setHidden('market', !marketHidden));
+
+    function applyPreset(name) {
+      if (name === 'compact') { calHeight = 300; marketHeight = 300; calHidden = false; marketHidden = false; }
+      else if (name === 'max') { calHeight = 700; marketHeight = 700; calHidden = false; marketHidden = false; }
+      else if (name === 'charts') { calHidden = true; marketHidden = true; }
+      if (name !== 'charts') {
+        calBody.style.height = calHeight + 'px'; marketBody.style.height = marketHeight + 'px';
+        calRange.value = calHeight; marketRange.value = marketHeight;
+        calVal.textContent = calHeight + 'px'; marketVal.textContent = marketHeight + 'px';
+      }
+      setNum(STORAGE.calHeight, calHeight); setNum(STORAGE.marketHeight, marketHeight);
+      setBool(STORAGE.calHidden, calHidden); setBool(STORAGE.marketHidden, marketHidden);
+      localStorage.setItem(STORAGE.preset, name);
+      applyVisibility(); updatePresetActive();
+    }
+    function updatePresetActive() { const cur = localStorage.getItem(STORAGE.preset); presetBtns.forEach(b => b.classList.toggle('active', b.dataset.preset === cur)); }
+    presetBtns.forEach(b => b.addEventListener('click', () => applyPreset(b.dataset.preset)));
+
+    resetBtn.addEventListener('click', () => {
+      calHeight = 450; marketHeight = 520; calHidden = false; marketHidden = false;
+      calBody.style.height = calHeight + 'px'; marketBody.style.height = marketHeight + 'px';
+      calRange.value = calHeight; marketRange.value = marketHeight;
+      calVal.textContent = calHeight + 'px'; marketVal.textContent = marketHeight + 'px';
+      setNum(STORAGE.calHeight, calHeight); setNum(STORAGE.marketHeight, marketHeight);
+      setBool(STORAGE.calHidden, false); setBool(STORAGE.marketHidden, false);
+      localStorage.removeItem(STORAGE.preset);
+      localStorage.setItem(STORAGE.order, 'calendar,market');
+      order = ['calendar', 'market']; applyOrder(); applyVisibility(); updatePresetActive();
+    });
+
+    let dragged = null;
+    [blockCalendar, blockMarket].forEach(block => {
+      block.addEventListener('dragstart', e => {
+        if (e.target.closest('.block-controls')) { e.preventDefault(); return; }
+        dragged = block; block.classList.add('dragging');
+        e.dataTransfer.effectAllowed = 'move';
+        try { e.dataTransfer.setData('text/plain', block.dataset.block); } catch {}
+      });
+      block.addEventListener('dragend', () => { block.classList.remove('dragging'); document.querySelectorAll('.block').forEach(b => b.classList.remove('drag-over')); dragged = null; });
+      block.addEventListener('dragover', e => { e.preventDefault(); if (dragged && dragged !== block) block.classList.add('drag-over'); });
+      block.addEventListener('dragleave', () => block.classList.remove('drag-over'));
+      block.addEventListener('drop', e => {
+        e.preventDefault(); block.classList.remove('drag-over');
+        if (!dragged || dragged === block) return;
+        const draggedId = dragged.dataset.block, targetId = block.dataset.block;
+        order = [targetId, draggedId];
+        localStorage.setItem(STORAGE.order, order.join(','));
+        applyOrder();
+      });
+    });
+
+    updatePresetActive(); applyVisibility();
+    window.layoutReload = function () { applyVisibility(); updatePresetActive(); };
+  })();
+
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => { navigator.serviceWorker.register('/service-worker.js').catch(() => {}); });
+  }
+</script>
+
+</body>
+</html>
